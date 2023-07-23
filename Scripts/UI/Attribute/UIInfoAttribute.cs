@@ -3,15 +3,21 @@ namespace GDK.Scripts.UI.Attribute
     using System;
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class ScreenAttribute : Attribute
+    public class UIInfoAttribute : Attribute
     {
         public string AddressableId;
 
-        public ScreenAttribute(string addressableId) { this.AddressableId = addressableId; }
+        public UIInfoAttribute(string addressableId) { this.AddressableId = addressableId; }
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class PopupAttribute : ScreenAttribute
+    public class ScreenInfoAttribute : UIInfoAttribute
+    {
+        public ScreenInfoAttribute(string addressableId) : base(addressableId) { }
+    }
+
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    public class PopupAttribute : UIInfoAttribute
     {
         public bool Blur;
         public bool CloseWhenClickOutSize;
@@ -24,7 +30,7 @@ namespace GDK.Scripts.UI.Attribute
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class PageAttribute : ScreenAttribute
+    public class PageAttribute : UIInfoAttribute
     {
         public bool Moveable;
 
@@ -32,7 +38,7 @@ namespace GDK.Scripts.UI.Attribute
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class ToolTipAttribute : ScreenAttribute
+    public class ToolTipAttribute : UIInfoAttribute
     {
         public ToolTipAttribute(string addressableId) : base(addressableId) { }
     }

@@ -22,7 +22,7 @@ namespace GDK.Scripts.UI.Base
 
         private void SetBlockRaycast(bool isBlock) { this.canvasGroup.blocksRaycasts = isBlock; }
 
-        public void ShowView()
+        private void ShowView()
         {
             this.SetViewAlpha(1);
             this.SetBlockRaycast(true);
