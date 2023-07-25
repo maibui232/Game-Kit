@@ -1,4 +1,4 @@
-namespace GDK.Scripts.UI.Interface
+namespace GDK.Scripts.Services.UI.Interface
 {
     using System;
     using Cysharp.Threading.Tasks;
@@ -8,14 +8,6 @@ namespace GDK.Scripts.UI.Interface
         Open,
         Hide,
         Close
-    }
-
-    public enum ScreenType
-    {
-        Screen,
-        Popup,
-        Page,
-        Tooltip
     }
 
     public interface IPresenter
@@ -28,7 +20,6 @@ namespace GDK.Scripts.UI.Interface
         string     Id         { get; }
         string     Name       { get; }
         ViewStatus ViewStatus { get; }
-        ScreenType ScreenType { get; }
         UniTask    OnViewReady();
         void       OpenView();
         UniTask    OpenViewAsync();

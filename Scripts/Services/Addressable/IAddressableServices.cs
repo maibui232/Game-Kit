@@ -1,4 +1,4 @@
-namespace GDK.Scripts.Addressable
+namespace GDK.Scripts.Services.Addressable
 {
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;

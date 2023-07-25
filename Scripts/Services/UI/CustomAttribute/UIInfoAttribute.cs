@@ -1,4 +1,4 @@
-namespace GDK.Scripts.UI.Attribute
+namespace GDK.Scripts.Services.UI.CustomAttribute
 {
     using System;
 
@@ -21,25 +21,13 @@ namespace GDK.Scripts.UI.Attribute
     {
         public bool Blur;
         public bool CloseWhenClickOutSize;
+        public bool Overlay;
 
-        public PopupAttribute(string addressableId, bool blur = false, bool closeWhenClickOutSize = false) : base(addressableId)
+        public PopupAttribute(string addressableId, bool blur = false, bool closeWhenClickOutSize = false, bool overlay = false) : base(addressableId)
         {
             this.Blur                  = blur;
             this.CloseWhenClickOutSize = closeWhenClickOutSize;
+            this.Overlay               = overlay;
         }
-    }
-
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class PageAttribute : UIInfoAttribute
-    {
-        public bool Moveable;
-
-        public PageAttribute(string addressableId, bool moveable = false) : base(addressableId) { this.Moveable = moveable; }
-    }
-
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class ToolTipAttribute : UIInfoAttribute
-    {
-        public ToolTipAttribute(string addressableId) : base(addressableId) { }
     }
 }

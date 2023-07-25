@@ -1,17 +1,17 @@
-namespace GDK.Scripts.UI
+namespace GDK.Scripts.VContainerExtend
 {
+    using GDK.Scripts.Services.UI;
     using UnityEngine;
     using VContainer;
     using VContainer.Unity;
 
-    public class UIServiceInstaller : LifetimeScope
+    public class ProjectLifeTimeScope : LifetimeScope
     {
-        [SerializeField] private RootUI rootUI;
-
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
-            builder.RegisterComponentInNewPrefab(this.rootUI, Lifetime.Scoped);
+            UIServiceLifeTimeScope.Config(builder);
+            Debug.Log("Init");
         }
     }
 }

@@ -1,16 +1,15 @@
-namespace GDK.Scripts.UI.Base
+namespace GDK.Scripts.Services.UI.Base
 {
     using System.Threading.Tasks;
     using Cysharp.Threading.Tasks;
-    using GDK.Scripts.UI.Interface;
+    using GDK.Scripts.Services.UI.Interface;
     using GDK.Scripts.Utils.SceneServices;
 
     public abstract class BasePresenter<TView> : IUIPresenter where TView : BaseView
     {
-        public          string     Id         => $"{SceneService.Instance.CurrentSceneName}/{this.Name}";
-        public          string     Name       => this.View.RootView.name;
-        public          ViewStatus ViewStatus { get; private set; }
-        public abstract ScreenType ScreenType { get; }
+        public string     Id         => $"{SceneService.Instance.CurrentSceneName}/{this.Name}";
+        public string     Name       => this.View.RootView.name;
+        public ViewStatus ViewStatus { get; private set; }
 
         public TView View { get; private set; }
 
@@ -78,45 +77,5 @@ namespace GDK.Scripts.UI.Base
         }
 
         public abstract UniTask BindData(TModel model);
-    }
-
-    public abstract class BaseScreenPresenter<TView> : BasePresenter<TView> where TView : BaseView
-    {
-        public override ScreenType ScreenType => ScreenType.Screen;
-    }
-
-    public abstract class BaseScreenPresenter<TView, TModel> : BasePresenter<TView, TModel> where TView : BaseView where TModel : IModel
-    {
-        public override ScreenType ScreenType => ScreenType.Screen;
-    }
-
-    public abstract class BasePopupPresenter<TView> : BasePresenter<TView> where TView : BaseView
-    {
-        public override ScreenType ScreenType => ScreenType.Popup;
-    }
-
-    public abstract class BasePopupPresenter<TView, TModel> : BasePresenter<TView, TModel> where TView : BaseView where TModel : IModel
-    {
-        public override ScreenType ScreenType => ScreenType.Screen;
-    }
-
-    public abstract class BasePagePresenter<TView> : BasePresenter<TView> where TView : BaseView
-    {
-        public override ScreenType ScreenType => ScreenType.Page;
-    }
-
-    public abstract class BasePagePresenter<TView, TModel> : BasePresenter<TView, TModel> where TView : BaseView where TModel : IModel
-    {
-        public override ScreenType ScreenType => ScreenType.Page;
-    }
-
-    public abstract class BaseTooltipPresenter<TView> : BasePresenter<TView> where TView : BaseView
-    {
-        public override ScreenType ScreenType => ScreenType.Tooltip;
-    }
-
-    public abstract class BaseTooltipPresenter<TView, TModel> : BasePresenter<TView, TModel> where TView : BaseView where TModel : IModel
-    {
-        public override ScreenType ScreenType => ScreenType.Tooltip;
     }
 }
