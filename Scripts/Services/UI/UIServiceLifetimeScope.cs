@@ -5,7 +5,7 @@ namespace GDK.Scripts.Services.UI
     using GDK.Scripts.VContainerExtend;
     using VContainer;
 
-    public class UIServiceLifeTimeScope : SubLifetimeScope<UIServiceLifeTimeScope>
+    public class UIServiceLifetimeScope : SubLifetimeScope<UIServiceLifetimeScope>
     {
         protected override void Configure(IContainerBuilder builder)
         {

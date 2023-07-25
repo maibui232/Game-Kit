@@ -7,6 +7,7 @@ namespace GDK.Scripts.VContainerExtend
         public static void Config(IContainerBuilder builder)
         {
             var scope = new TDerived();
+            // var scope = FindObjectOfType<TDerived>();
             scope.Configure(builder);
         }
 

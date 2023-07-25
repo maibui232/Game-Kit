@@ -10,7 +10,7 @@ namespace GDK.Scripts.VContainerExtend
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
-            UIServiceLifeTimeScope.Config(builder);
+            UIServiceLifetimeScope.Config(builder);
             Debug.Log("Init");
         }
     }
