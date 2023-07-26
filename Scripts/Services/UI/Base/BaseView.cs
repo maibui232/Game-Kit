@@ -48,6 +48,6 @@ namespace GDK.Scripts.Services.UI.Base
 
         public void DestroyView() { Destroy(this.gameObject); }
 
-        public void SetParent(Transform parent) { }
+        public void SetParent(Transform parent) { this.transform.SetParent(parent, false); }
     }
 }

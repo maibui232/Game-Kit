@@ -2,6 +2,7 @@ namespace GDK.Scripts.Services.UI.Interface
 {
     using System;
     using Cysharp.Threading.Tasks;
+    using UnityEngine;
 
     public enum ViewStatus
     {
@@ -17,8 +18,9 @@ namespace GDK.Scripts.Services.UI.Interface
 
     public interface IUIPresenter : IPresenter, IDisposable
     {
-        string     Id         { get; }
-        string     Name       { get; }
+        string     Id   { get; }
+        string     Name { get; }
+        void       SetViewParent(Transform parent);
         ViewStatus ViewStatus { get; }
         UniTask    OnViewReady();
         void       OpenView();

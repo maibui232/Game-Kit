@@ -5,9 +5,11 @@ namespace GDK.Scripts.Services.UI
     public class RootUI : MonoBehaviour
     {
         [SerializeField] private RectTransform mainRect;
-        [SerializeField] private RectTransform popupRect;
+        [SerializeField] private RectTransform overlayRect;
+        [SerializeField] private RectTransform closeRect;
 
-        public RectTransform MainRect  => this.mainRect;
-        public RectTransform PopupRect => this.popupRect;
+        public RectTransform MainRect    => this.mainRect;
+        public RectTransform OverlayRect => this.overlayRect;
+        public RectTransform CloseRect   => this.closeRect;
     }
 }

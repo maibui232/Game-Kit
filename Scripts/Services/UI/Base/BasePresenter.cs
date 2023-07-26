@@ -4,6 +4,7 @@ namespace GDK.Scripts.Services.UI.Base
     using Cysharp.Threading.Tasks;
     using GDK.Scripts.Services.UI.Interface;
     using GDK.Scripts.Utils.SceneServices;
+    using UnityEngine;
 
     public abstract class BasePresenter<TView> : IUIPresenter where TView : BaseView
     {
@@ -14,6 +15,8 @@ namespace GDK.Scripts.Services.UI.Base
         public TView View { get; private set; }
 
         public void SetView(IView view) { this.View = (TView)view; }
+
+        public void SetViewParent(Transform parent) { this.View.SetParent(parent); }
 
         public virtual void Dispose() { }
 
