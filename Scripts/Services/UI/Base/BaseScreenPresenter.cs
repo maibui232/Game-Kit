@@ -6,7 +6,7 @@ namespace GDK.Scripts.Services.UI.Base
     using GDK.Scripts.Utils.SceneServices;
     using UnityEngine;
 
-    public abstract class BasePresenter<TView> : IUIPresenter where TView : BaseView
+    public abstract class BaseScreenPresenter<TView> : IUIPresenter where TView : BaseView
     {
         public string     Id         => $"{SceneService.Instance.CurrentSceneName}/{this.Name}";
         public string     Name       => this.View.RootView.name;
@@ -20,12 +20,12 @@ namespace GDK.Scripts.Services.UI.Base
 
         public virtual void Dispose() { }
 
-        public UniTask OnViewReady() { return UniTask.WaitUntil(() => this.View != null); }
+        public virtual UniTask OnViewReady() { return this.View != null ? UniTask.CompletedTask : UniTask.WaitUntil(() => this.View != null); }
 
         public async void OpenView()
         {
             if (this.ViewStatus == ViewStatus.Open) return;
-            await this.OnViewReady();
+            await UniTask.WaitUntil(() => this.View != null);
             this.View.OpenView();
 
             this.ViewStatus = ViewStatus.Open;
@@ -41,6 +41,7 @@ namespace GDK.Scripts.Services.UI.Base
         {
             if (this.ViewStatus == ViewStatus.Close) return;
             this.View.CloseView();
+            this.ViewStatus = ViewStatus.Close;
         }
 
         public UniTask CloseViewAsync()
@@ -60,7 +61,7 @@ namespace GDK.Scripts.Services.UI.Base
         public abstract UniTask BindData();
     }
 
-    public abstract class BasePresenter<TView, TModel> : BasePresenter<TView>, IUIPresenter<TModel> where TView : BaseView where TModel : IModel
+    public abstract class BaseScreenPresenter<TView, TModel> : BaseScreenPresenter<TView>, IUIPresenter<TModel> where TView : BaseView where TModel : IModel
     {
         private TaskCompletionSource<bool> isSetModel = new(false);
 
@@ -80,5 +81,13 @@ namespace GDK.Scripts.Services.UI.Base
         }
 
         public abstract UniTask BindData(TModel model);
+    }
+
+    public abstract class BaseScreenPopupPresenter<TView> : BaseScreenPresenter<TView> where TView : BaseView
+    {
+    }
+
+    public abstract class BaseScreenPopupPresenter<TView, TModel> : BaseScreenPresenter<TView, TModel> where TModel : IModel where TView : BaseView
+    {
     }
 }

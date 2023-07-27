@@ -13,7 +13,7 @@ namespace GDK.Scripts.Test
         {
             this.uiService = uiService;
 
-            Debug.Log("Init");
+            this.uiService.OpenView<TestScreenScreenPresenter>();
         }
     }
 }

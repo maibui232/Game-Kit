@@ -1,6 +1,7 @@
 namespace GDK.Scripts.Services.UI
 {
     using GDK.Scripts.Services.Addressable;
+    using GDK.Scripts.Services.UI.Interface;
     using GDK.Scripts.Services.UI.Service;
     using GDK.Scripts.VContainerExtend;
     using VContainer;
@@ -13,6 +14,7 @@ namespace GDK.Scripts.Services.UI
             builder.Register<AddressableServices>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterComponentInNewPrefab(param1, Lifetime.Singleton).DontDestroyOnLoad();
             builder.Register<UIService>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.RegisterAllType<IUIPresenter>(Lifetime.Transient);
         }
     }
 }

@@ -6,9 +6,10 @@ namespace GDK.Scripts.Services.UI.Interface
 
     public enum ViewStatus
     {
+        None,
+        Close,
         Open,
-        Hide,
-        Close
+        Hide
     }
 
     public interface IPresenter

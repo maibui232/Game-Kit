@@ -3,7 +3,9 @@ namespace GDK.Scripts.Services.UI.Service
     using System;
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
+    using GDK.Scripts.Exception;
     using GDK.Scripts.Services.Addressable;
+    using GDK.Scripts.Services.UI.Base;
     using GDK.Scripts.Services.UI.CustomAttribute;
     using GDK.Scripts.Services.UI.Interface;
     using UnityEngine;
@@ -12,8 +14,8 @@ namespace GDK.Scripts.Services.UI.Service
 
     public interface IUIService
     {
-        UniTask<TPresenter> OpenView<TPresenter>(bool stackView = true) where TPresenter : IUIPresenter;
-        UniTask<TPresenter> OpenView<TPresenter, TModel>(TModel model, bool stackView = true) where TPresenter : IUIPresenter<TModel> where TModel : IModel;
+        UniTask<TPresenter> OpenView<TPresenter>() where TPresenter : IUIPresenter;
+        UniTask<TPresenter> OpenView<TPresenter, TModel>(TModel model) where TPresenter : IUIPresenter<TModel> where TModel : IModel;
         UniTask             CloseCurrentView();
         UniTask             CloseAllView();
         void                HideCurrentView();
@@ -43,14 +45,21 @@ namespace GDK.Scripts.Services.UI.Service
             this.rootUI              = rootUI;
         }
 
-        private IUIPresenter GetCurrentView() { return this.presenterStack.Peek() is { ViewStatus: ViewStatus.Open } ? this.presenterStack.Peek() : null; }
-
-        private TUIInfo GetUIInfo<TUIInfo>(object presenter) where TUIInfo : UIInfoAttribute { return (TUIInfo)Attribute.GetCustomAttribute(presenter.GetType(), typeof(TUIInfo)); }
-
-        private async void StackView<TPresenter>(TPresenter presenter, UIInfoAttribute uiInfo, bool isStack) where TPresenter : IUIPresenter
+        private IUIPresenter GetCurrentView()
         {
-            var popupInfo = (PopupAttribute)uiInfo;
-            if (popupInfo is not { Overlay: false }) return;
+            if (this.presenterStack.Count == 0) return null;
+            return this.presenterStack.Peek() is { ViewStatus: ViewStatus.Open } ? this.presenterStack.Peek() : null;
+        }
+
+        private TUIInfo GetUIInfo<TUIInfo>(object presenter) where TUIInfo : ScreenInfoAttribute { return (TUIInfo)Attribute.GetCustomAttribute(presenter.GetType(), typeof(TUIInfo)); }
+
+        private void StackView<TPresenter>(TPresenter presenter) where TPresenter : IUIPresenter
+        {
+            if (this.IsOverlay(presenter))
+            {
+                this.presenterStack.Push(presenter);
+                return;
+            }
 
             var currentView = this.GetCurrentView();
             if (currentView == null)
@@ -59,48 +68,52 @@ namespace GDK.Scripts.Services.UI.Service
                 return;
             }
 
-            if (isStack)
-            {
-                this.HideCurrentView();
-            }
-            else
-            {
-                this.CloseCurrentView();
-            }
-
+            this.HideCurrentView();
             this.presenterStack.Push(presenter);
         }
 
-        public async UniTask<TPresenter> OpenView<TPresenter>(bool stackView = true) where TPresenter : IUIPresenter
+        private bool IsPopup<TPresenter>() { return typeof(TPresenter).IsSubclassOf(typeof(BaseScreenPopupPresenter<>)); }
+
+        private bool IsOverlay<TPresenter>(TPresenter presenter) { return this.IsPopup<TPresenter>() && this.GetUIInfo<PopupInfoAttribute>(presenter).Overlay; }
+
+        public async UniTask<TPresenter> OpenView<TPresenter>() where TPresenter : IUIPresenter
         {
             var presenter = this.objectResolver.Resolve<TPresenter>();
-            var uiInfo    = this.GetUIInfo<UIInfoAttribute>(presenter);
+            var uiInfo    = this.GetUIInfo<ScreenInfoAttribute>(presenter);
             var view      = await this.GetView(presenter, uiInfo);
             presenter.SetView(view);
+            await presenter.OpenViewAsync();
             presenter.BindData();
-            this.StackView(presenter, uiInfo, stackView);
+            this.StackView(presenter);
             return presenter;
         }
 
-        public async UniTask<TPresenter> OpenView<TPresenter, TModel>(TModel model, bool stackView = true) where TPresenter : IUIPresenter<TModel> where TModel : IModel
+        public async UniTask<TPresenter> OpenView<TPresenter, TModel>(TModel model) where TPresenter : IUIPresenter<TModel> where TModel : IModel
         {
-            var presenter = await this.OpenView<TPresenter>(stackView);
+            var presenter = await this.OpenView<TPresenter>();
             presenter.SetModel(model);
             return presenter;
         }
 
-        private async UniTask<IView> GetView(IUIPresenter presenter, UIInfoAttribute uiInfo)
+        private async UniTask<IView> GetView(IUIPresenter presenter, ScreenInfoAttribute screenInfo)
         {
-            if (this.idToView.TryGetValue(uiInfo.AddressableId, out var view))
+            var isOverlay = this.IsOverlay(presenter);
+            if (this.idToView.TryGetValue(screenInfo.AddressableId, out var view))
             {
+                view.SetParent(isOverlay ? this.rootUI.OverlayRect : this.rootUI.MainRect);
                 return view;
             }
 
-            var viewPrefab = await this.addressableServices.LoadAsset<GameObject>(uiInfo.AddressableId);
+            var viewPrefab = await this.addressableServices.LoadAsset<GameObject>(screenInfo.AddressableId);
 
-            var popupInfo = this.GetUIInfo<PopupAttribute>(presenter);
-            var viewSpawn = Object.Instantiate(viewPrefab, popupInfo == null ? this.rootUI.MainRect : this.rootUI.OverlayRect).GetComponent<IView>();
-            this.idToView.Add(uiInfo.AddressableId, viewSpawn);
+            var viewSpawn = Object.Instantiate(viewPrefab, isOverlay ? this.rootUI.OverlayRect : this.rootUI.MainRect).GetComponent<IView>();
+
+            if (viewSpawn == null)
+            {
+                Debug.LogException(new GdkNullViewException<IView>());
+            }
+
+            this.idToView.Add(screenInfo.AddressableId, viewSpawn);
             return viewSpawn;
         }
 
@@ -109,6 +122,7 @@ namespace GDK.Scripts.Services.UI.Service
             var currentView = this.GetCurrentView();
             currentView.SetViewParent(this.rootUI.CloseRect);
             await currentView.CloseViewAsync();
+            currentView.Dispose();
             this.presenterStack.Pop();
         }
 
@@ -118,6 +132,7 @@ namespace GDK.Scripts.Services.UI.Service
             {
                 uiPresenter.SetViewParent(this.rootUI.CloseRect);
                 await uiPresenter.CloseViewAsync();
+                uiPresenter.Dispose();
             }
 
             this.presenterStack.Clear();
