@@ -6,6 +6,7 @@ namespace GDK.Scripts.Services.UI.Service
     using GDK.Scripts.Exception;
     using GDK.Scripts.Extensions;
     using GDK.Scripts.Services.Addressable;
+    using GDK.Scripts.Services.Logger;
     using GDK.Scripts.Services.UI.Base;
     using GDK.Scripts.Services.UI.CustomAttribute;
     using GDK.Scripts.Services.UI.Interface;
@@ -15,10 +16,13 @@ namespace GDK.Scripts.Services.UI.Service
 
     public interface IUIService
     {
+        IUIPresenter        CurrentUIPresenter { get; }
         UniTask<TPresenter> OpenView<TPresenter>() where TPresenter : IUIPresenter;
         UniTask<TPresenter> OpenView<TPresenter, TModel>(TModel model) where TPresenter : IUIPresenter<TModel> where TModel : IModel;
         UniTask             CloseCurrentView();
         UniTask             CloseAllView();
+        void                HideCurrentView();
+        void                HideAllView();
         void                DestroyCurrentView();
         UniTask             DestroyAllView();
     }
@@ -30,44 +34,51 @@ namespace GDK.Scripts.Services.UI.Service
         private readonly IAddressableServices addressableServices;
         private readonly IObjectResolver      objectResolver;
         private readonly RootUI               rootUI;
+        private readonly ILoggerService       logger;
 
         #endregion
 
-        private readonly Dictionary<string, IView> idToView       = new();
-        private readonly Stack<IUIPresenter>       presenterStack = new();
+        private readonly Dictionary<string, IView> idToView         = new();
+        private readonly List<IUIPresenter>        uiPresenterStack = new();
 
-        protected UIService(IAddressableServices addressableServices, IObjectResolver objectResolver, RootUI rootUI)
+        protected UIService(IAddressableServices addressableServices, IObjectResolver objectResolver, RootUI rootUI, ILoggerService logger)
         {
             this.addressableServices = addressableServices;
             this.objectResolver      = objectResolver;
             this.rootUI              = rootUI;
+            this.logger              = logger;
         }
 
-        private IUIPresenter GetCurrentView()
+        private IUIPresenter currentScreenShow;
+
+        public IUIPresenter CurrentUIPresenter
         {
-            if (this.presenterStack.Count == 0) return null;
-            return this.presenterStack.Peek() is { ViewStatus: ViewStatus.Open } ? this.presenterStack.Peek() : null;
+            get => this.currentScreenShow ?? (this.uiPresenterStack.Count == 0 ? null : this.uiPresenterStack[^1]);
+            private set => this.currentScreenShow = value;
         }
 
         private TUIInfo GetUIInfo<TUIInfo>(object presenter) where TUIInfo : ScreenInfoAttribute { return (TUIInfo)Attribute.GetCustomAttribute(presenter.GetType(), typeof(TUIInfo)); }
 
-        private async void StackView<TPresenter>(TPresenter presenter) where TPresenter : IUIPresenter
+        private void StackView<TPresenter>(TPresenter presenter) where TPresenter : IUIPresenter
         {
             if (this.IsOverlay(presenter))
             {
-                this.presenterStack.Push(presenter);
                 return;
             }
 
-            var currentView = this.GetCurrentView();
-            if (currentView == null)
+            if (this.CurrentUIPresenter == null)
             {
-                this.presenterStack.Push(presenter);
+                this.uiPresenterStack.Add(presenter);
                 return;
             }
 
-            await this.CloseCurrentView();
-            this.presenterStack.Push(presenter);
+            this.HideCurrentView();
+            if (this.uiPresenterStack.Contains(presenter))
+            {
+                this.uiPresenterStack.Remove(presenter);
+            }
+
+            this.uiPresenterStack.Add(presenter);
         }
 
         private bool IsPopup<TPresenter>() { return typeof(BasePopupPresenter<>).IsSubclassOfRawGeneric(typeof(TPresenter)); }
@@ -79,10 +90,16 @@ namespace GDK.Scripts.Services.UI.Service
             var presenter = this.objectResolver.Resolve<TPresenter>();
             var uiInfo    = this.GetUIInfo<ScreenInfoAttribute>(presenter);
             var view      = await this.GetView(presenter, uiInfo);
+
             presenter.SetView(view);
             await presenter.OpenViewAsync();
+
             presenter.BindData();
+
             this.StackView(presenter);
+            this.CurrentUIPresenter = presenter;
+
+            this.logger.Log(Color.green, $"Open view: {presenter}");
             return presenter;
         }
 
@@ -90,6 +107,7 @@ namespace GDK.Scripts.Services.UI.Service
         {
             var presenter = await this.OpenView<TPresenter>();
             presenter.SetModel(model);
+            presenter.BindData();
             return presenter;
         }
 
@@ -103,8 +121,7 @@ namespace GDK.Scripts.Services.UI.Service
             }
 
             var viewPrefab = await this.addressableServices.LoadAsset<GameObject>(screenInfo.AddressableId);
-
-            var viewSpawn = Object.Instantiate(viewPrefab, isOverlay ? this.rootUI.OverlayRect : this.rootUI.MainRect).GetComponent<IView>();
+            var viewSpawn  = Object.Instantiate(viewPrefab, isOverlay ? this.rootUI.OverlayRect : this.rootUI.MainRect).GetComponent<IView>();
 
             if (viewSpawn == null)
             {
@@ -117,40 +134,58 @@ namespace GDK.Scripts.Services.UI.Service
 
         public async UniTask CloseCurrentView()
         {
-            var currentView = this.GetCurrentView();
+            var currentView = this.CurrentUIPresenter;
             currentView.SetViewParent(this.rootUI.CloseRect);
             await currentView.CloseViewAsync();
             currentView.Dispose();
-            this.presenterStack.Pop();
+
+            if (this.uiPresenterStack.Count == 0) return;
+            this.CurrentUIPresenter = this.uiPresenterStack[^1];
+            this.uiPresenterStack.RemoveAt(this.uiPresenterStack.Count - 1);
+            if (this.CurrentUIPresenter != null) await this.CurrentUIPresenter.OpenViewAsync();
         }
 
         public async UniTask CloseAllView()
         {
-            foreach (var uiPresenter in this.presenterStack)
+            foreach (var uiPresenter in this.uiPresenterStack)
             {
                 uiPresenter.SetViewParent(this.rootUI.CloseRect);
                 await uiPresenter.CloseViewAsync();
                 uiPresenter.Dispose();
             }
 
-            this.presenterStack.Clear();
+            this.uiPresenterStack.Clear();
+        }
+
+        public void HideCurrentView()
+        {
+            var currentPresenter = this.CurrentUIPresenter;
+            currentPresenter?.HideView();
+        }
+
+        public void HideAllView()
+        {
+            foreach (var presenter in this.uiPresenterStack)
+            {
+                presenter.HideView();
+            }
         }
 
         public void DestroyCurrentView()
         {
-            var currenView = this.GetCurrentView();
+            var currenView = this.CurrentUIPresenter;
             currenView.DestroyView();
-            this.presenterStack.Pop();
         }
 
         public UniTask DestroyAllView()
         {
-            foreach (var uiPresenter in this.presenterStack)
+            foreach (var uiPresenter in this.uiPresenterStack)
             {
                 uiPresenter.DestroyView();
             }
 
-            this.presenterStack.Clear();
+            this.uiPresenterStack.Clear();
+            this.CurrentUIPresenter = null;
             return UniTask.CompletedTask;
         }
     }
