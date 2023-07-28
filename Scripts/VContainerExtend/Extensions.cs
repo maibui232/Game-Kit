@@ -2,7 +2,6 @@ namespace GDK.Scripts.VContainerExtend
 {
     using System;
     using System.Linq;
-    using System.Reflection;
     using UnityEngine;
     using VContainer;
     using VContainer.Unity;
@@ -15,7 +14,7 @@ namespace GDK.Scripts.VContainerExtend
             return builder.RegisterComponentInNewPrefab(obj, lifetime);
         }
 
-        public static void RegisterAllType<T>(this IContainerBuilder builder, Lifetime lifetime)
+        public static void RegisterAllDerivedTypeFrom<T>(this IContainerBuilder builder, Lifetime lifetime)
         {
             var derivedTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetTypes())

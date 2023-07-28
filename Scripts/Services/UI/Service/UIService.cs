@@ -4,6 +4,7 @@ namespace GDK.Scripts.Services.UI.Service
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using GDK.Scripts.Exception;
+    using GDK.Scripts.Extensions;
     using GDK.Scripts.Services.Addressable;
     using GDK.Scripts.Services.UI.Base;
     using GDK.Scripts.Services.UI.CustomAttribute;
@@ -18,8 +19,6 @@ namespace GDK.Scripts.Services.UI.Service
         UniTask<TPresenter> OpenView<TPresenter, TModel>(TModel model) where TPresenter : IUIPresenter<TModel> where TModel : IModel;
         UniTask             CloseCurrentView();
         UniTask             CloseAllView();
-        void                HideCurrentView();
-        void                HideAllView();
         void                DestroyCurrentView();
         UniTask             DestroyAllView();
     }
@@ -37,7 +36,6 @@ namespace GDK.Scripts.Services.UI.Service
         private readonly Dictionary<string, IView> idToView       = new();
         private readonly Stack<IUIPresenter>       presenterStack = new();
 
-
         protected UIService(IAddressableServices addressableServices, IObjectResolver objectResolver, RootUI rootUI)
         {
             this.addressableServices = addressableServices;
@@ -53,7 +51,7 @@ namespace GDK.Scripts.Services.UI.Service
 
         private TUIInfo GetUIInfo<TUIInfo>(object presenter) where TUIInfo : ScreenInfoAttribute { return (TUIInfo)Attribute.GetCustomAttribute(presenter.GetType(), typeof(TUIInfo)); }
 
-        private void StackView<TPresenter>(TPresenter presenter) where TPresenter : IUIPresenter
+        private async void StackView<TPresenter>(TPresenter presenter) where TPresenter : IUIPresenter
         {
             if (this.IsOverlay(presenter))
             {
@@ -68,11 +66,11 @@ namespace GDK.Scripts.Services.UI.Service
                 return;
             }
 
-            this.HideCurrentView();
+            await this.CloseCurrentView();
             this.presenterStack.Push(presenter);
         }
 
-        private bool IsPopup<TPresenter>() { return typeof(TPresenter).IsSubclassOf(typeof(BaseScreenPopupPresenter<>)); }
+        private bool IsPopup<TPresenter>() { return typeof(BasePopupPresenter<>).IsSubclassOfRawGeneric(typeof(TPresenter)); }
 
         private bool IsOverlay<TPresenter>(TPresenter presenter) { return this.IsPopup<TPresenter>() && this.GetUIInfo<PopupInfoAttribute>(presenter).Overlay; }
 
@@ -110,7 +108,7 @@ namespace GDK.Scripts.Services.UI.Service
 
             if (viewSpawn == null)
             {
-                Debug.LogException(new GdkNullViewException<IView>());
+                throw new GdkException($"This view instantiate does not contain: {typeof(IView)}, Add Component: {typeof(IView)}, please!");
             }
 
             this.idToView.Add(screenInfo.AddressableId, viewSpawn);
@@ -136,19 +134,6 @@ namespace GDK.Scripts.Services.UI.Service
             }
 
             this.presenterStack.Clear();
-        }
-        public void HideCurrentView()
-        {
-            var currentView = this.GetCurrentView();
-            currentView.HideView();
-        }
-
-        public void HideAllView()
-        {
-            foreach (var uiPresenter in this.presenterStack)
-            {
-                uiPresenter.HideView();
-            }
         }
 
         public void DestroyCurrentView()

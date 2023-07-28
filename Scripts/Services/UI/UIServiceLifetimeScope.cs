@@ -14,7 +14,7 @@ namespace GDK.Scripts.Services.UI
             builder.Register<AddressableServices>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterComponentInNewPrefab(param1, Lifetime.Singleton).DontDestroyOnLoad();
             builder.Register<UIService>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.RegisterAllType<IUIPresenter>(Lifetime.Transient);
+            builder.RegisterAllDerivedTypeFrom<IUIPresenter>(Lifetime.Scoped);
         }
     }
 }

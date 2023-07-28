@@ -83,11 +83,11 @@ namespace GDK.Scripts.Services.UI.Base
         public abstract UniTask BindData(TModel model);
     }
 
-    public abstract class BaseScreenPopupPresenter<TView> : BaseScreenPresenter<TView> where TView : BaseView
+    public abstract class BasePopupPresenter<TView> : BaseScreenPresenter<TView> where TView : BaseView
     {
     }
 
-    public abstract class BaseScreenPopupPresenter<TView, TModel> : BaseScreenPresenter<TView, TModel> where TModel : IModel where TView : BaseView
+    public abstract class BasePopupPresenter<TView, TModel> : BaseScreenPresenter<TView, TModel> where TModel : IModel where TView : BaseView
     {
     }
 }

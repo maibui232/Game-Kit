@@ -15,7 +15,7 @@ namespace GDK.Scripts.Test
     }
 
     [PopupInfo(nameof(TestPopup2View), overlay: true)]
-    public class TestPopup2Presenter : BaseScreenPopupPresenter<TestPopup2View>
+    public class TestPopup2Presenter : BasePopupPresenter<TestPopup2View>
     {
         private readonly IUIService uiService;
 
