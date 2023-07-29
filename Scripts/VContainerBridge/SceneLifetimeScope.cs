@@ -1,7 +1,7 @@
-namespace GDK.Scripts.VContainerExtend
+namespace GDK.Scripts.VContainerBridge
 {
-    using VContainer;
-    using VContainer.Unity;
+    using global::VContainer;
+    using global::VContainer.Unity;
 #if UNITY_EDITOR
     using System;
     using System.Linq;

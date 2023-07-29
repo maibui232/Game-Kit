@@ -1,6 +1,8 @@
 namespace GDK.Scripts.Extensions
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public static class ReflectionExtension
     {
@@ -18,6 +20,13 @@ namespace GDK.Scripts.Extensions
             }
 
             return false;
+        }
+
+        public static IEnumerable<Type> GetAllNonAbstractDerivedTypeFrom<T>()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(domainAssembly => domainAssembly.GetTypes())
+                .Where(type => !type.IsAbstract && typeof(T).IsAssignableFrom(type));
         }
     }
 }

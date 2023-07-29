@@ -1,4 +1,4 @@
-namespace GDK.Scripts.VContainerExtend
+namespace GDK.Scripts.VContainerBridge
 {
     using VContainer;
     using VContainer.Unity;

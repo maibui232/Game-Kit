@@ -1,13 +1,14 @@
-namespace GDK.Scripts.VContainerExtend
+namespace GDK.Scripts.Extensions
 {
-    using System;
-    using System.Linq;
+    using MessagePipe;
     using UnityEngine;
     using VContainer;
     using VContainer.Unity;
 
     public static class Extensions
     {
+        private static MessagePipeOptions options;
+
         public static ComponentRegistrationBuilder RegisterFromResource<T>(this IContainerBuilder builder, string resourcePath, Lifetime lifetime) where T : MonoBehaviour
         {
             var obj = Resources.Load<GameObject>(resourcePath).GetComponent<T>();
@@ -16,13 +17,16 @@ namespace GDK.Scripts.VContainerExtend
 
         public static void RegisterAllDerivedTypeFrom<T>(this IContainerBuilder builder, Lifetime lifetime)
         {
-            var derivedTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(domainAssembly => domainAssembly.GetTypes())
-                .Where(type => !type.IsAbstract && typeof(T).IsAssignableFrom(type));
-            foreach (var type in derivedTypes)
+            foreach (var type in ReflectionExtension.GetAllNonAbstractDerivedTypeFrom<T>())
             {
                 builder.Register(type, lifetime);
             }
+        }
+
+        public static void RegisterMessage<T>(this IContainerBuilder builder)
+        {
+            options ??= builder.RegisterMessagePipe();
+            builder.RegisterMessageBroker<T>(options);
         }
     }
 }

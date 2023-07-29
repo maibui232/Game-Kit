@@ -1,9 +1,10 @@
 namespace GDK.Scripts.Services.UI
 {
+    using GDK.Scripts.Extensions;
     using GDK.Scripts.Services.Addressable;
     using GDK.Scripts.Services.UI.Interface;
     using GDK.Scripts.Services.UI.Service;
-    using GDK.Scripts.VContainerExtend;
+    using GDK.Scripts.VContainerBridge;
     using VContainer;
     using VContainer.Unity;
 

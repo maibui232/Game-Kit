@@ -107,7 +107,6 @@ namespace GDK.Scripts.Services.UI.Service
         {
             var presenter = await this.OpenView<TPresenter>();
             presenter.SetModel(model);
-            presenter.BindData();
             return presenter;
         }
 

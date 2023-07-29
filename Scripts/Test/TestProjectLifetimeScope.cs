@@ -1,8 +1,10 @@
 namespace GDK.Scripts.Test
 {
+    using GDK.Scripts.Extensions;
     using GDK.Scripts.Services;
     using GDK.Scripts.Services.UI;
-    using GDK.Scripts.VContainerExtend;
+    using GDK.Scripts.Test.Message;
+    using GDK.Scripts.VContainerBridge;
     using UnityEngine;
     using VContainer;
 
@@ -14,6 +16,8 @@ namespace GDK.Scripts.Test
         {
             base.Configure(builder);
             GdkLifetimeScope.Config(builder, this.Container, this.rootUI);
+
+            builder.RegisterMessage<TestMessage>();
         }
     }
 }
