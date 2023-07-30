@@ -44,7 +44,7 @@ namespace GDK.Scripts.Services.ObjectPool
 
         public GameObject Spawn()
         {
-            var spawnObj = this.listRecycled.Count == 0 ? this.InitObject() : this.listRecycled[^1];
+            var spawnObj = this.listRecycled.Count == 0 ? this.InitObject() : this.listRecycled[0];
             this.listRecycled.Remove(spawnObj);
             return spawnObj;
         }

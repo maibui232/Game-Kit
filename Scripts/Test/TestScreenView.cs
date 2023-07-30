@@ -24,19 +24,13 @@ namespace GDK.Scripts.Test
 
         public TestScreenScreenPresenter(IUIService uiService) { this.uiService = uiService; }
 
-        public override async UniTask OnViewReady() { await base.OnViewReady(); }
-
-        public override UniTask BindData()
+        public override async UniTask OnViewReady()
         {
+            await base.OnViewReady();
             this.View.ChangeButton.onClick.AddListener(this.OnClickChange);
-            return UniTask.CompletedTask;
         }
 
-        public override void Dispose()
-        {
-            this.View.ChangeButton.onClick.RemoveAllListeners();
-            base.Dispose();
-        }
+        public override UniTask BindData() { return UniTask.CompletedTask; }
 
         private void OnClickChange() { this.uiService.OpenView<TestPopup2Presenter>(); }
     }

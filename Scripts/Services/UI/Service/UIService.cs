@@ -38,8 +38,8 @@ namespace GDK.Scripts.Services.UI.Service
 
         #endregion
 
-        private readonly Dictionary<string, IView> idToView         = new();
-        private readonly List<IUIPresenter>        uiPresenterStack = new();
+        private readonly List<IUIPresenter>      uiPresenterStack    = new();
+        private readonly Dictionary<Type, IView> presenterTypeToView = new();
 
         protected UIService(IAddressableServices addressableServices, IObjectResolver objectResolver, RootUI rootUI, ILoggerService logger)
         {
@@ -85,7 +85,7 @@ namespace GDK.Scripts.Services.UI.Service
 
         private bool IsOverlay<TPresenter>(TPresenter presenter) { return this.IsPopup<TPresenter>() && this.GetUIInfo<PopupInfoAttribute>(presenter).Overlay; }
 
-        public async UniTask<TPresenter> OpenView<TPresenter>() where TPresenter : IUIPresenter
+        private async UniTask<TPresenter> InitPresenter<TPresenter>() where TPresenter : IUIPresenter
         {
             var presenter = this.objectResolver.Resolve<TPresenter>();
             var uiInfo    = this.GetUIInfo<ScreenInfoAttribute>(presenter);
@@ -93,11 +93,15 @@ namespace GDK.Scripts.Services.UI.Service
 
             presenter.SetView(view);
             await presenter.OpenViewAsync();
-
-            presenter.BindData();
-
             this.StackView(presenter);
             this.CurrentUIPresenter = presenter;
+            return presenter;
+        }
+
+        public async UniTask<TPresenter> OpenView<TPresenter>() where TPresenter : IUIPresenter
+        {
+            var presenter = await this.InitPresenter<TPresenter>();
+            presenter.BindData();
 
             this.logger.Log(Color.green, $"Open view: {presenter}");
             return presenter;
@@ -105,18 +109,29 @@ namespace GDK.Scripts.Services.UI.Service
 
         public async UniTask<TPresenter> OpenView<TPresenter, TModel>(TModel model) where TPresenter : IUIPresenter<TModel> where TModel : IModel
         {
-            var presenter = await this.OpenView<TPresenter>();
+            var presenter = await this.InitPresenter<TPresenter>();
             presenter.SetModel(model);
+            presenter.BindData();
+
+            this.logger.Log(Color.green, $"Open view: {presenter}");
             return presenter;
         }
 
         private async UniTask<IView> GetView(IUIPresenter presenter, ScreenInfoAttribute screenInfo)
         {
-            var isOverlay = this.IsOverlay(presenter);
-            if (this.idToView.TryGetValue(screenInfo.AddressableId, out var view))
+            var isOverlay     = this.IsOverlay(presenter);
+            var presenterType = presenter.GetType();
+            if (this.presenterTypeToView.TryGetValue(presenterType, out var view))
             {
-                view.SetParent(isOverlay ? this.rootUI.OverlayRect : this.rootUI.MainRect);
-                return view;
+                if (view == null)
+                {
+                    this.presenterTypeToView.Remove(presenterType);
+                }
+                else
+                {
+                    view.SetParent(isOverlay ? this.rootUI.OverlayRect : this.rootUI.MainRect);
+                    return view;
+                }
             }
 
             var viewPrefab = await this.addressableServices.LoadAsset<GameObject>(screenInfo.AddressableId);
@@ -127,7 +142,7 @@ namespace GDK.Scripts.Services.UI.Service
                 throw new GdkException($"This view instantiate does not contain: {typeof(IView)}, Add Component: {typeof(IView)}, please!");
             }
 
-            this.idToView.Add(screenInfo.AddressableId, viewSpawn);
+            this.presenterTypeToView.Add(presenter.GetType(), viewSpawn);
             return viewSpawn;
         }
 

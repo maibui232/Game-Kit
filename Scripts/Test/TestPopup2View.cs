@@ -28,25 +28,20 @@ namespace GDK.Scripts.Test
             this.uiService      = uiService;
             this.messageService = messageService;
         }
-        public override UniTask BindData()
+
+        public override async UniTask OnViewReady()
         {
+            await base.OnViewReady();
             this.View.ChangeButton.onClick.AddListener(this.OnChange);
             this.View.ShowMessageButton.onClick.AddListener(this.OnClickShowMessage);
             this.View.ShowMessageButton2.onClick.AddListener(this.OnClickShowMessage2);
-
-            return UniTask.CompletedTask;
         }
+
+        public override UniTask BindData() { return UniTask.CompletedTask; }
 
         private void OnClickShowMessage() { this.messageService.SendMessage(1, new TestMessage("Adu ma .....................................")); }
-        private void OnClickShowMessage2() { this.messageService.SendMessage(2, new TestMessage("Adu ma .....................................")); }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-            this.View.ChangeButton.onClick.RemoveAllListeners();
-            this.View.ShowMessageButton.onClick.RemoveAllListeners();
-            this.View.ShowMessageButton2.onClick.RemoveAllListeners();
-        }
+        private void OnClickShowMessage2() { this.messageService.SendMessage(2, new TestMessage("Adu ma .....................................")); }
 
         private void OnChange() { this.uiService.OpenView<TestScreenScreenPresenter>(); }
     }

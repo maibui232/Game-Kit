@@ -12,20 +12,30 @@ namespace GDK.Scripts.Services.UI.Base
         public string     Name       => this.View.RootView.name;
         public ViewStatus ViewStatus { get; private set; }
 
+        private bool onViewReady;
+
         public TView View { get; private set; }
 
-        public void SetView(IView view) { this.View = (TView)view; }
+        public void SetView(IView view)
+        {
+            this.onViewReady = this.View == null;
+            this.View        = (TView)view;
+        }
 
         public void SetViewParent(Transform parent) { this.View.SetParent(parent); }
 
         public virtual void Dispose() { }
 
-        public virtual UniTask OnViewReady() { return this.View != null ? UniTask.CompletedTask : UniTask.WaitUntil(() => this.View != null); }
+        public virtual UniTask OnViewReady() { return UniTask.WaitUntil(() => this.View != null); }
 
         public async void OpenView()
         {
             if (this.ViewStatus == ViewStatus.Open) return;
-            await UniTask.WaitUntil(() => this.View != null);
+            if (this.onViewReady)
+            {
+                await this.OnViewReady();
+            }
+
             this.View.OpenView();
 
             this.ViewStatus = ViewStatus.Open;
@@ -49,6 +59,7 @@ namespace GDK.Scripts.Services.UI.Base
             this.CloseView();
             return UniTask.CompletedTask;
         }
+
         public void HideView()
         {
             if (this.ViewStatus == ViewStatus.Hide) return;
