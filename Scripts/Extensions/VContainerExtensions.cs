@@ -23,10 +23,16 @@ namespace GDK.Scripts.Extensions
             }
         }
 
-        public static void RegisterMessage<T>(this IContainerBuilder builder)
+        public static IContainerBuilder RegisterMessage<TMessage>(this IContainerBuilder builder)
         {
             options ??= builder.RegisterMessagePipe();
-            builder.RegisterMessageBroker<T>(options);
+            return builder.RegisterMessageBroker<TMessage>(options);
+        }
+
+        public static IContainerBuilder RegisterMessage<TKey, TMessage>(this IContainerBuilder builder)
+        {
+            options ??= builder.RegisterMessagePipe();
+            return builder.RegisterMessageBroker<TKey, TMessage>(options);
         }
     }
 }

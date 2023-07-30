@@ -17,7 +17,7 @@ namespace GDK.Scripts.Test
             base.Configure(builder);
             GdkLifetimeScope.Config(builder, this.Container, this.rootUI);
 
-            builder.RegisterMessage<TestMessage>();
+            builder.RegisterMessage<int, TestMessage>();
         }
     }
 }

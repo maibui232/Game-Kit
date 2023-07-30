@@ -22,15 +22,19 @@ namespace GDK.Scripts.Test
             this.isInjected.TrySetResult(true);
 
             this.uiService.OpenView<TestScreenScreenPresenter>();
-            this.messageService.Subscribe<TestMessage>(this.OnShowMessage);
+            this.messageService.Subscribe<int, TestMessage>(1, this.OnShowMessage);
+            this.messageService.Subscribe<int, TestMessage>(2, this.OnShowMessage2);
         }
 
         private async void OnDestroy()
         {
             await this.isInjected.Task;
-            this.messageService.UnSubscribe<TestMessage>(this.OnShowMessage);
+            this.messageService.UnSubscribe<int, TestMessage>(1, this.OnShowMessage);
+            this.messageService.UnSubscribe<int, TestMessage>(2, this.OnShowMessage2);
         }
 
-        private void OnShowMessage(TestMessage obj) { Debug.Log(obj.Message); }
+        private void OnShowMessage(TestMessage obj) { Debug.Log($"1: {obj.Message}"); }
+
+        private void OnShowMessage2(TestMessage obj) { Debug.Log($"2: {obj.Message}"); }
     }
 }
