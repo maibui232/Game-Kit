@@ -15,12 +15,12 @@ namespace GDK.Scripts.Services.Message
         void Subscribe<TMessage>(Action callback);
         void UnSubscribe<TMessage>(Action<TMessage> callback);
         void UnSubscribe<TMessage>(Action callback);
-        void SendMessage<TKey, TMessage>(TKey key) where TMessage : new();
-        void SendMessage<TKey, TMessage>(TKey key, TMessage message);
-        void Subscribe<TKey, TMessage>(TKey key, Action<TMessage> callback);
-        void Subscribe<TKey, TMessage>(TKey key, Action callback);
-        void UnSubscribe<TKey, TMessage>(TKey key, Action<TMessage> callback);
-        void UnSubscribe<TKey, TMessage>(TKey key, Action callback);
+        void SendMessageWithKey<TKey, TMessage>(TKey key) where TMessage : new();
+        void SendMessageWithKey<TKey, TMessage>(TKey key, TMessage message);
+        void SubscribeWithKey<TKey, TMessage>(TKey key, Action<TMessage> callback);
+        void SubscribeWithKey<TKey, TMessage>(TKey key, Action callback);
+        void UnSubscribeWithKey<TKey, TMessage>(TKey key, Action<TMessage> callback);
+        void UnSubscribeWithKey<TKey, TMessage>(TKey key, Action callback);
     }
 
     public class MessageService : IMessageService
@@ -106,19 +106,19 @@ namespace GDK.Scripts.Services.Message
             this.messageToDisposable.Remove(methodInfo);
         }
 
-        public void SendMessage<TKey, TMessage>(TKey key) where TMessage : new()
+        public void SendMessageWithKey<TKey, TMessage>(TKey key) where TMessage : new()
         {
             var publisher = this.resolver.Resolve<IPublisher<TKey, TMessage>>();
             publisher.Publish(key, new TMessage());
         }
 
-        public void SendMessage<TKey, TMessage>(TKey key, TMessage message)
+        public void SendMessageWithKey<TKey, TMessage>(TKey key, TMessage message)
         {
             var publisher = this.resolver.Resolve<IPublisher<TKey, TMessage>>();
             publisher.Publish(key, message);
         }
 
-        public void Subscribe<TKey, TMessage>(TKey key, Action<TMessage> callback)
+        public void SubscribeWithKey<TKey, TMessage>(TKey key, Action<TMessage> callback)
         {
             var keyMessagePair = new KeyMessagePair(key.GetHashCode(), callback.Method);
             if (this.keyMessagePairToDictionary.TryGetValue(keyMessagePair, out _))
@@ -133,7 +133,7 @@ namespace GDK.Scripts.Services.Message
             this.keyMessagePairToDictionary.Add(keyMessagePair, disposable);
         }
 
-        public void Subscribe<TKey, TMessage>(TKey key, Action callback)
+        public void SubscribeWithKey<TKey, TMessage>(TKey key, Action callback)
         {
             var keyMessagePair = new KeyMessagePair(key.GetHashCode(), callback.Method);
             if (this.keyMessagePairToDictionary.TryGetValue(keyMessagePair, out _))
@@ -148,7 +148,7 @@ namespace GDK.Scripts.Services.Message
             this.keyMessagePairToDictionary.Add(keyMessagePair, disposable);
         }
 
-        public void UnSubscribe<TKey, TMessage>(TKey key, Action<TMessage> callback)
+        public void UnSubscribeWithKey<TKey, TMessage>(TKey key, Action<TMessage> callback)
         {
             var keyMessagePair = new KeyMessagePair(key.GetHashCode(), callback.Method);
             if (!this.keyMessagePairToDictionary.TryGetValue(keyMessagePair, out var disposable))
@@ -160,7 +160,7 @@ namespace GDK.Scripts.Services.Message
             this.keyMessagePairToDictionary.Remove(keyMessagePair);
         }
 
-        public void UnSubscribe<TKey, TMessage>(TKey key, Action callback)
+        public void UnSubscribeWithKey<TKey, TMessage>(TKey key, Action callback)
         {
             var keyMessagePair = new KeyMessagePair(key.GetHashCode(), callback.Method);
             if (!this.keyMessagePairToDictionary.TryGetValue(keyMessagePair, out var disposable))
