@@ -1,13 +1,17 @@
 namespace GDK.Scripts.Services.Addressable
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Cysharp.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
+    using UnityEngine.ResourceManagement.ResourceProviders;
+    using UnityEngine.SceneManagement;
 
     public interface IAddressableServices
     {
-        UniTask<TAsset> LoadAsset<TAsset>(object key) where TAsset : Object;
+        UniTask<TAsset>     LoadAsset<TAsset>(object key) where TAsset : Object;
+        Task<SceneInstance> LoadSceneAsync(object key, LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activeOnLoad = true, int priority = 100);
     }
 
     public class AddressableServices : IAddressableServices
@@ -22,6 +26,11 @@ namespace GDK.Scripts.Services.Addressable
             }
 
             return await Addressables.LoadAssetAsync<TAsset>(key);
+        }
+
+        public async Task<SceneInstance> LoadSceneAsync(object key, LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activeOnLoad = true, int priority = 100)
+        {
+            return await Addressables.LoadSceneAsync(key, loadSceneMode, activeOnLoad, priority);
         }
     }
 }
