@@ -1,0 +1,24 @@
+{
+  "name": "com.game_kit.core",
+  "version": "1.0.0",
+  "displayName": "Game Kit",
+  "description": "",
+  "unity": "2022.3",
+  "unityRelease": "5f1",
+  "dependencies": {
+    "com.unity.addressables": "1.21.14",
+    "com.cysharp.messagepipe": "https://github.com/Cysharp/MessagePipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe",
+    "com.cysharp.messagepipe.vcontainer": "https://github.com/Cysharp/MessagePipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe.VContainer",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+    "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+    "jp.hadashikick.vcontainer": "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer#1.13.2"
+  },
+  "keywords": [
+    "Game Kit"
+  ],
+  "author": {
+    "name": "Mike",
+    "email": "duymai.work@gmail.com",
+    "url": "https://github.com/maibui232/GDK.git"
+  }
+}
