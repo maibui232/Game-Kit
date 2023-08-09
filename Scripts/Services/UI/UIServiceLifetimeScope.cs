@@ -1,10 +1,10 @@
-namespace GDK.Scripts.Services.UI
+namespace GameKit.Services.UI
 {
-    using GDK.Scripts.Extensions;
-    using GDK.Scripts.Services.Addressable;
-    using GDK.Scripts.Services.UI.Interface;
-    using GDK.Scripts.Services.UI.Service;
-    using GDK.Scripts.VContainerBridge;
+    using GameKit.Extensions;
+    using GameKit.Services.Addressable;
+    using GameKit.Services.UI.Interface;
+    using GameKit.Services.UI.Service;
+    using GameKit.VContainerBridge;
     using VContainer;
     using VContainer.Unity;
 

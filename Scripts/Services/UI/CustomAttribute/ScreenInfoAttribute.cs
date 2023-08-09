@@ -1,4 +1,4 @@
-namespace GDK.Scripts.Services.UI.CustomAttribute
+namespace GameKit.Services.UI.CustomAttribute
 {
     using System;
 

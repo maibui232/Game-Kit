@@ -1,9 +1,9 @@
-namespace GDK.Scripts.Services.UI.Base
+namespace GameKit.Services.UI.Base
 {
     using System.Threading.Tasks;
     using Cysharp.Threading.Tasks;
-    using GDK.Scripts.Services.UI.Interface;
-    using GDK.Scripts.Utils.SceneServices;
+    using GameKit.Services.UI.Interface;
+    using GameKit.Services.Utils.SceneServices;
     using UnityEngine;
 
     public abstract class BaseScreenPresenter<TView> : IUIPresenter where TView : BaseView

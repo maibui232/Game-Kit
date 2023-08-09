@@ -1,6 +1,6 @@
-namespace GDK.Scripts.Services.UI.Base
+namespace GameKit.Services.UI.Base
 {
-    using GDK.Scripts.Services.UI.Interface;
+    using GameKit.Services.UI.Interface;
     using UnityEngine;
 
     [RequireComponent(typeof(CanvasGroup))]

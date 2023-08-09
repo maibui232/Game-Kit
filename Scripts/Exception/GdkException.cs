@@ -1,4 +1,4 @@
-namespace GDK.Scripts.Exception
+namespace GameKit.Exception
 {
     using System;
     using System.Runtime.Serialization;

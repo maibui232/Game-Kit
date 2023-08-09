@@ -1,4 +1,4 @@
-namespace GDK.Scripts.Services.Logger
+namespace GameKit.Services.Logger
 {
     using System;
     using UnityEngine;

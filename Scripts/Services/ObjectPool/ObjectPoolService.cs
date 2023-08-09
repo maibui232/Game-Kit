@@ -1,10 +1,10 @@
-namespace GDK.Scripts.Services.ObjectPool
+namespace GameKit.Services.ObjectPool
 {
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
-    using GDK.Scripts.Exception;
-    using GDK.Scripts.Services.Addressable;
+    using GameKit.Exception;
+    using GameKit.Services.Addressable;
     using UnityEngine;
 
     public interface IObjectPoolService

@@ -1,7 +1,7 @@
-namespace GDK.Scripts.Utils.SceneServices
+namespace GameKit.Services.Utils.SceneServices
 {
     using Cysharp.Threading.Tasks;
-    using GDK.Scripts.Services.Addressable;
+    using GameKit.Services.Addressable;
     using UnityEngine.SceneManagement;
 
     public interface ISceneService

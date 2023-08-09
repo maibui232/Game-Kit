@@ -1,4 +1,4 @@
-namespace GDK.Scripts.Services.ObjectPool
+namespace GameKit.Services.ObjectPool
 {
     using System.Collections.Generic;
     using UnityEngine;

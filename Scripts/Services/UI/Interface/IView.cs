@@ -1,4 +1,4 @@
-namespace GDK.Scripts.Services.UI.Interface
+namespace GameKit.Services.UI.Interface
 {
     using UnityEngine;
 

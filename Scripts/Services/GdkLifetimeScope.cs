@@ -1,10 +1,10 @@
-namespace GDK.Scripts.Services
+namespace GameKit.Services
 {
-    using GDK.Scripts.Services.Logger;
-    using GDK.Scripts.Services.Message;
-    using GDK.Scripts.Services.UI;
-    using GDK.Scripts.Utils.SceneServices;
-    using GDK.Scripts.VContainerBridge;
+    using GameKit.Services.Logger;
+    using GameKit.Services.Message;
+    using GameKit.Services.UI;
+    using GameKit.Services.Utils.SceneServices;
+    using GameKit.VContainerBridge;
     using VContainer;
 
     public class GdkLifetimeScope : SubLifetimeScope<GdkLifetimeScope, RootUI>

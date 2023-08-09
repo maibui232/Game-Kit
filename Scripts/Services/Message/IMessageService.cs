@@ -1,9 +1,9 @@
-namespace GDK.Scripts.Services.Message
+namespace GameKit.Services.Message
 {
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using GDK.Scripts.Exception;
+    using GameKit.Exception;
     using MessagePipe;
     using VContainer;
 

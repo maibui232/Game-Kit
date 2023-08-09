@@ -1,4 +1,4 @@
-namespace GDK.Scripts.Services.Addressable
+namespace GameKit.Services.Addressable
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;

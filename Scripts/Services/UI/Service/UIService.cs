@@ -1,15 +1,15 @@
-namespace GDK.Scripts.Services.UI.Service
+namespace GameKit.Services.UI.Service
 {
     using System;
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
-    using GDK.Scripts.Exception;
-    using GDK.Scripts.Extensions;
-    using GDK.Scripts.Services.Addressable;
-    using GDK.Scripts.Services.Logger;
-    using GDK.Scripts.Services.UI.Base;
-    using GDK.Scripts.Services.UI.CustomAttribute;
-    using GDK.Scripts.Services.UI.Interface;
+    using GameKit.Exception;
+    using GameKit.Extensions;
+    using GameKit.Services.Addressable;
+    using GameKit.Services.Logger;
+    using GameKit.Services.UI.Base;
+    using GameKit.Services.UI.CustomAttribute;
+    using GameKit.Services.UI.Interface;
     using UnityEngine;
     using VContainer;
     using Object = UnityEngine.Object;

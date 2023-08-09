@@ -1,14 +1,12 @@
-namespace GDK.Scripts.VContainerBridge
+namespace GameKit.VContainerBridge
 {
-    using global::VContainer;
-    using global::VContainer.Unity;
-#if UNITY_EDITOR
     using System;
     using System.Linq;
     using System.Reflection;
     using Sirenix.OdinInspector;
     using UnityEngine;
-#endif
+    using VContainer;
+    using VContainer.Unity;
 
     public class SceneLifetimeScope<TDerived> : LifetimeScope where TDerived : SceneLifetimeScope<TDerived>
     {

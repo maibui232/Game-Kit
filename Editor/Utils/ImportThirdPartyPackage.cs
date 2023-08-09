@@ -1,4 +1,4 @@
-namespace GDK.Editor.Utils
+namespace GameKit.Editor.Editor.Utils
 {
     using System.Collections.Generic;
     using UnityEditor;

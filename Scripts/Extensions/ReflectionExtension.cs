@@ -1,4 +1,4 @@
-namespace GDK.Scripts.Extensions
+namespace GameKit.Extensions
 {
     using System;
     using System.Collections.Generic;

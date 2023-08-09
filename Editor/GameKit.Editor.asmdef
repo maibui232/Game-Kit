@@ -1,6 +1,6 @@
 {
-    "name": "GDK.Editor",
-    "rootNamespace": "",
+    "name": "GameKit.Editor",
+    "rootNamespace": "GameKit.Editor",
     "references": [],
     "includePlatforms": [
         "Editor"

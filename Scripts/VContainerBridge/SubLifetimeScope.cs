@@ -1,6 +1,6 @@
-namespace GDK.Scripts.VContainerBridge
+namespace GameKit.VContainerBridge
 {
-    using global::VContainer;
+    using VContainer;
 
     public abstract class SubLifetimeScope<TDerived> where TDerived : SubLifetimeScope<TDerived>, new()
     {
