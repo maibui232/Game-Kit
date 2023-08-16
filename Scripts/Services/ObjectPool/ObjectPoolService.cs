@@ -38,7 +38,13 @@ namespace GameKit.Services.ObjectPool
         private readonly Dictionary<string, GameObject>     idToPrefab         = new();
         private readonly Dictionary<GameObject, ObjectPool> prefabToObjectPool = new();
 
-        public ObjectPoolService(IAddressableServices addressableServices) { this.addressableServices = addressableServices; }
+        public static ObjectPoolService Instance;
+
+        public ObjectPoolService(IAddressableServices addressableServices)
+        {
+            this.addressableServices = addressableServices;
+            Instance                 = this;
+        }
 
         private async UniTask<T> GetPrefab<T>(string addressableId) where T : Component
         {
