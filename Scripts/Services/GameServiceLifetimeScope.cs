@@ -8,7 +8,7 @@ namespace GameKit.Services
     using GameKit.VContainerBridge;
     using VContainer;
 
-    public class GdkLifetimeScope : SubLifetimeScope<GdkLifetimeScope, RootUI>
+    public class GameServiceLifetimeScope : SubLifetimeScope<GameServiceLifetimeScope, RootUI>
     {
         protected override void Configure(IContainerBuilder builder, IObjectResolver container, RootUI param1)
         {
