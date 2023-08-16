@@ -1,7 +1,6 @@
 namespace GameKit.Services.Addressable
 {
     using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Cysharp.Threading.Tasks;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
@@ -10,15 +9,16 @@ namespace GameKit.Services.Addressable
 
     public interface IAssetServices
     {
-        UniTask<TAsset>     LoadAsset<TAsset>(object key) where TAsset : Object;
-        Task<SceneInstance> LoadSceneAsync(object key, LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activeOnLoad = true, int priority = 100);
+        UniTask<TAsset>        LoadAssetAsync<TAsset>(object key) where TAsset : Object;
+        UniTask<SceneInstance> LoadSceneAsync(object key, LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activeOnLoad = true, int priority = 100);
+        UniTask                UnloadSceneAsync(SceneInstance scene, UnloadSceneOptions options, bool autoReleaseHandler = true);
     }
 
     public class AssetServices : IAssetServices
     {
         private readonly Dictionary<object, Object> keyToAsset = new();
 
-        public async UniTask<TAsset> LoadAsset<TAsset>(object key) where TAsset : Object
+        public async UniTask<TAsset> LoadAssetAsync<TAsset>(object key) where TAsset : Object
         {
             if (this.keyToAsset.TryGetValue(key, out var asset))
             {
@@ -28,9 +28,14 @@ namespace GameKit.Services.Addressable
             return await Addressables.LoadAssetAsync<TAsset>(key);
         }
 
-        public async Task<SceneInstance> LoadSceneAsync(object key, LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activeOnLoad = true, int priority = 100)
+        public async UniTask<SceneInstance> LoadSceneAsync(object key, LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activeOnLoad = true, int priority = 100)
         {
             return await Addressables.LoadSceneAsync(key, loadSceneMode, activeOnLoad, priority);
+        }
+
+        public async UniTask UnloadSceneAsync(SceneInstance scene, UnloadSceneOptions options, bool autoReleaseHandler = true)
+        {
+            await Addressables.UnloadSceneAsync(scene, options, autoReleaseHandler);
         }
     }
 }

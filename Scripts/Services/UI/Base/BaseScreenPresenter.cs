@@ -3,12 +3,11 @@ namespace GameKit.Services.UI.Base
     using System.Threading.Tasks;
     using Cysharp.Threading.Tasks;
     using GameKit.Services.UI.Interface;
-    using GameKit.Services.Utils.SceneServices;
     using UnityEngine;
 
     public abstract class BaseScreenPresenter<TView> : IUIPresenter where TView : BaseView
     {
-        public string     Id         => $"{SceneService.Instance.CurrentSceneName}/{this.Name}";
+        public string     Id         => $"{this.Name}";
         public string     Name       => this.View.RootView.name;
         public ViewStatus ViewStatus { get; private set; }
 

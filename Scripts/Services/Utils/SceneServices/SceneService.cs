@@ -1,14 +1,17 @@
 namespace GameKit.Services.Utils.SceneServices
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameKit.Services.Addressable;
+    using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
     public interface ISceneService
     {
-        string  CurrentSceneName { get; }
-        UniTask LoadSingleScene(string sceneName, bool activeOnLoad = true);
-        UniTask LoadAdditiveScene(string sceneName, bool activeOnLoad = true);
+        List<SceneInstance> ActiveScenes { get; }
+        UniTask             LoadSingleScene(string sceneName, bool activeOnLoad = true);
+        UniTask             LoadAdditiveScene(string sceneName, bool activeOnLoad = true);
     }
 
     public class SceneService : ISceneService
@@ -23,10 +26,22 @@ namespace GameKit.Services.Utils.SceneServices
 
         public SceneService(IAssetServices assetServices) { this.assetServices = assetServices; }
 
-        public string CurrentSceneName => SceneManager.GetActiveScene().name;
+        public List<SceneInstance> ActiveScenes { get; } = new();
 
-        public async UniTask LoadSingleScene(string sceneName, bool activeOnLoad = true) { await this.assetServices.LoadSceneAsync(sceneName, LoadSceneMode.Single, activeOnLoad); }
+        public async UniTask LoadSingleScene(string sceneName, bool activeOnLoad = true)
+        {
+            var listTask = Enumerable.Select(this.ActiveScenes, sceneInstance => this.assetServices.UnloadSceneAsync(sceneInstance, UnloadSceneOptions.None)).ToList();
+            await UniTask.WhenAll(listTask);
+            this.ActiveScenes.Clear();
 
-        public async UniTask LoadAdditiveScene(string sceneName, bool activeOnLoad = true) { await this.assetServices.LoadSceneAsync(sceneName, LoadSceneMode.Additive, activeOnLoad); }
+            var scene = await this.assetServices.LoadSceneAsync(sceneName, LoadSceneMode.Additive, activeOnLoad);
+            this.ActiveScenes.Add(scene);
+        }
+
+        public async UniTask LoadAdditiveScene(string sceneName, bool activeOnLoad = true)
+        {
+            var scene = await this.assetServices.LoadSceneAsync(sceneName, LoadSceneMode.Additive, activeOnLoad);
+            this.ActiveScenes.Add(scene);
+        }
     }
 }

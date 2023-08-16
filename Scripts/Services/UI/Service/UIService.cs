@@ -134,7 +134,7 @@ namespace GameKit.Services.UI.Service
                 }
             }
 
-            var viewPrefab = await this.assetServices.LoadAsset<GameObject>(screenInfo.AddressableId);
+            var viewPrefab = await this.assetServices.LoadAssetAsync<GameObject>(screenInfo.AddressableId);
             var viewSpawn  = Object.Instantiate(viewPrefab, isOverlay ? this.rootUI.OverlayRect : this.rootUI.MainRect).GetComponent<IView>();
 
             if (viewSpawn == null)

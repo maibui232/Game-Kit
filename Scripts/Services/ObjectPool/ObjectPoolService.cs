@@ -54,7 +54,7 @@ namespace GameKit.Services.ObjectPool
                 else return prefab.GetComponent<T>();
             }
 
-            var loadedPrefab = await this.assetServices.LoadAsset<GameObject>(addressableId);
+            var loadedPrefab = await this.assetServices.LoadAssetAsync<GameObject>(addressableId);
             this.idToPrefab.Add(addressableId, loadedPrefab);
             return loadedPrefab.GetComponent<T>();
         }
