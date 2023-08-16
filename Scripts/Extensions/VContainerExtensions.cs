@@ -34,5 +34,7 @@ namespace GameKit.Extensions
             options ??= builder.RegisterMessagePipe();
             return builder.RegisterMessageBroker<TKey, TMessage>(options);
         }
+
+        public static ComponentRegistrationBuilder AsProject(this ComponentRegistrationBuilder builder, Transform parent) { return builder.DontDestroyOnLoad().UnderTransform(parent); }
     }
 }

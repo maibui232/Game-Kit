@@ -5,6 +5,12 @@ namespace GameKit.VContainerBridge
 
     public abstract class ProjectLifeTimeScope : LifetimeScope
     {
+        protected override void Awake()
+        {
+            base.Awake();
+            DontDestroyOnLoad(this);
+        }
+
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
