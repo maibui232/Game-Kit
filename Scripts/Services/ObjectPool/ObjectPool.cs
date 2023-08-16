@@ -45,6 +45,7 @@ namespace GameKit.Services.ObjectPool
         public GameObject Spawn()
         {
             var spawnObj = this.listRecycled.Count == 0 ? this.InitObject() : this.listRecycled[0];
+            spawnObj.SetActive(true);
             this.listRecycled.Remove(spawnObj);
             return spawnObj;
         }

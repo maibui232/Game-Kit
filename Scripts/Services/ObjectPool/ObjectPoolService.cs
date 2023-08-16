@@ -43,7 +43,7 @@ namespace GameKit.Services.ObjectPool
         public ObjectPoolService(IAssetServices assetServices)
         {
             this.assetServices = assetServices;
-            Instance                 = this;
+            Instance           = this;
         }
 
         private async UniTask<T> GetPrefab<T>(string addressableId) where T : Component
@@ -68,6 +68,7 @@ namespace GameKit.Services.ObjectPool
             }
 
             var pool = new GameObject().AddComponent<ObjectPool>();
+            pool.CreatePool(prefab, 0);
             this.prefabToObjectPool.Add(prefab, pool);
             return pool;
         }
