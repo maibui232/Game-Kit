@@ -8,7 +8,7 @@ namespace GameKit.VContainerBridge
     using VContainer;
     using VContainer.Unity;
 
-    public class SceneLifetimeScope<TDerived> : LifetimeScope where TDerived : SceneLifetimeScope<TDerived>
+    public class SceneLifetimeScope : LifetimeScope
     {
 #if UNITY_EDITOR
         [Button]

@@ -10,13 +10,13 @@ namespace GameKit.Services
 
     public class GameServiceLifetimeScope : SubLifetimeScope<GameServiceLifetimeScope, RootUI>
     {
-        protected override void Configure(IContainerBuilder builder, IObjectResolver container, RootUI param1)
+        protected override void Configure(IContainerBuilder builder, IObjectResolver container, RootUI rootUI)
         {
             builder.Register<MessageService>(Lifetime.Singleton).AsImplementedInterfaces(); // Message
             builder.Register<LoggerService>(Lifetime.Singleton).AsImplementedInterfaces(); // Logger
             builder.Register<SceneService>(Lifetime.Singleton).AsImplementedInterfaces(); // Scene Service
             builder.Register<ObjectPoolService>(Lifetime.Singleton).AsImplementedInterfaces(); // Object Pool
-            UIServiceLifetimeScope.Config(builder, container, param1); // UI Service
+            UIServiceLifetimeScope.Config(builder, container, rootUI); // UI Service
         }
     }
 }

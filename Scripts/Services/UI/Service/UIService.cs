@@ -31,10 +31,10 @@ namespace GameKit.Services.UI.Service
     {
         #region Inject
 
-        private readonly IAssetServices assetServices;
-        private readonly IObjectResolver      objectResolver;
-        private readonly RootUI               rootUI;
-        private readonly ILoggerService       logger;
+        private readonly IAssetServices  assetServices;
+        private readonly IObjectResolver objectResolver;
+        private readonly RootUI          rootUI;
+        private readonly ILoggerService  logger;
 
         #endregion
 
@@ -43,10 +43,10 @@ namespace GameKit.Services.UI.Service
 
         protected UIService(IAssetServices assetServices, IObjectResolver objectResolver, RootUI rootUI, ILoggerService logger)
         {
-            this.assetServices = assetServices;
-            this.objectResolver      = objectResolver;
-            this.rootUI              = rootUI;
-            this.logger              = logger;
+            this.assetServices  = assetServices;
+            this.objectResolver = objectResolver;
+            this.rootUI         = rootUI;
+            this.logger         = logger;
         }
 
         private IUIPresenter currentScreenShow;
@@ -91,11 +91,16 @@ namespace GameKit.Services.UI.Service
             var uiInfo    = this.GetUIInfo<ScreenInfoAttribute>(presenter);
             var view      = await this.GetView(presenter, uiInfo);
 
+            await this.ShowView(presenter, view);
+            return presenter;
+        }
+
+        private async UniTask ShowView<TPresenter>(TPresenter presenter, IView view) where TPresenter : IUIPresenter
+        {
             presenter.SetView(view);
             await presenter.OpenViewAsync();
             this.StackView(presenter);
             this.CurrentUIPresenter = presenter;
-            return presenter;
         }
 
         public async UniTask<TPresenter> OpenView<TPresenter>() where TPresenter : IUIPresenter
