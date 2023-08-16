@@ -12,7 +12,7 @@ namespace GameKit.Services.UI
     {
         protected override void Configure(IContainerBuilder builder, IObjectResolver container, RootUI param1)
         {
-            builder.Register<AddressableServices>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<AssetServices>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterComponentInNewPrefab(param1, Lifetime.Singleton).DontDestroyOnLoad();
             builder.Register<UIService>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterAllDerivedTypeFrom<IUIPresenter>(Lifetime.Scoped);

@@ -8,13 +8,13 @@ namespace GameKit.Services.Addressable
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
-    public interface IAddressableServices
+    public interface IAssetServices
     {
         UniTask<TAsset>     LoadAsset<TAsset>(object key) where TAsset : Object;
         Task<SceneInstance> LoadSceneAsync(object key, LoadSceneMode loadSceneMode = LoadSceneMode.Single, bool activeOnLoad = true, int priority = 100);
     }
 
-    public class AddressableServices : IAddressableServices
+    public class AssetServices : IAssetServices
     {
         private readonly Dictionary<object, Object> keyToAsset = new();
 

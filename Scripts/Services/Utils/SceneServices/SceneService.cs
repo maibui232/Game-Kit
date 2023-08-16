@@ -15,18 +15,18 @@ namespace GameKit.Services.Utils.SceneServices
     {
         #region Inject
 
-        private readonly IAddressableServices addressableServices;
+        private readonly IAssetServices assetServices;
 
         #endregion
 
         public static SceneService Instance;
 
-        public SceneService(IAddressableServices addressableServices) { this.addressableServices = addressableServices; }
+        public SceneService(IAssetServices assetServices) { this.assetServices = assetServices; }
 
         public string CurrentSceneName => SceneManager.GetActiveScene().name;
 
-        public async UniTask LoadSingleScene(string sceneName, bool activeOnLoad = true) { await this.addressableServices.LoadSceneAsync(sceneName, LoadSceneMode.Single, activeOnLoad); }
+        public async UniTask LoadSingleScene(string sceneName, bool activeOnLoad = true) { await this.assetServices.LoadSceneAsync(sceneName, LoadSceneMode.Single, activeOnLoad); }
 
-        public async UniTask LoadAdditiveScene(string sceneName, bool activeOnLoad = true) { await this.addressableServices.LoadSceneAsync(sceneName, LoadSceneMode.Additive, activeOnLoad); }
+        public async UniTask LoadAdditiveScene(string sceneName, bool activeOnLoad = true) { await this.assetServices.LoadSceneAsync(sceneName, LoadSceneMode.Additive, activeOnLoad); }
     }
 }

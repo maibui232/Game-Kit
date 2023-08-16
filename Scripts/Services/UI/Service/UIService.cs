@@ -31,7 +31,7 @@ namespace GameKit.Services.UI.Service
     {
         #region Inject
 
-        private readonly IAddressableServices addressableServices;
+        private readonly IAssetServices assetServices;
         private readonly IObjectResolver      objectResolver;
         private readonly RootUI               rootUI;
         private readonly ILoggerService       logger;
@@ -41,9 +41,9 @@ namespace GameKit.Services.UI.Service
         private readonly List<IUIPresenter>      uiPresenterStack    = new();
         private readonly Dictionary<Type, IView> presenterTypeToView = new();
 
-        protected UIService(IAddressableServices addressableServices, IObjectResolver objectResolver, RootUI rootUI, ILoggerService logger)
+        protected UIService(IAssetServices assetServices, IObjectResolver objectResolver, RootUI rootUI, ILoggerService logger)
         {
-            this.addressableServices = addressableServices;
+            this.assetServices = assetServices;
             this.objectResolver      = objectResolver;
             this.rootUI              = rootUI;
             this.logger              = logger;
@@ -134,7 +134,7 @@ namespace GameKit.Services.UI.Service
                 }
             }
 
-            var viewPrefab = await this.addressableServices.LoadAsset<GameObject>(screenInfo.AddressableId);
+            var viewPrefab = await this.assetServices.LoadAsset<GameObject>(screenInfo.AddressableId);
             var viewSpawn  = Object.Instantiate(viewPrefab, isOverlay ? this.rootUI.OverlayRect : this.rootUI.MainRect).GetComponent<IView>();
 
             if (viewSpawn == null)

@@ -31,7 +31,7 @@ namespace GameKit.Services.ObjectPool
     {
         #region Inject
 
-        private readonly IAddressableServices addressableServices;
+        private readonly IAssetServices assetServices;
 
         #endregion
 
@@ -40,9 +40,9 @@ namespace GameKit.Services.ObjectPool
 
         public static ObjectPoolService Instance;
 
-        public ObjectPoolService(IAddressableServices addressableServices)
+        public ObjectPoolService(IAssetServices assetServices)
         {
-            this.addressableServices = addressableServices;
+            this.assetServices = assetServices;
             Instance                 = this;
         }
 
@@ -54,7 +54,7 @@ namespace GameKit.Services.ObjectPool
                 else return prefab.GetComponent<T>();
             }
 
-            var loadedPrefab = await this.addressableServices.LoadAsset<GameObject>(addressableId);
+            var loadedPrefab = await this.assetServices.LoadAsset<GameObject>(addressableId);
             this.idToPrefab.Add(addressableId, loadedPrefab);
             return loadedPrefab.GetComponent<T>();
         }
@@ -67,7 +67,7 @@ namespace GameKit.Services.ObjectPool
                 else return objectPool;
             }
 
-            var pool = Object.Instantiate(prefab).AddComponent<ObjectPool>();
+            var pool = new GameObject().AddComponent<ObjectPool>();
             this.prefabToObjectPool.Add(prefab, pool);
             return pool;
         }
