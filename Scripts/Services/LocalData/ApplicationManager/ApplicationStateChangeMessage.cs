@@ -1,4 +1,4 @@
-namespace GameKit.Services.ApplicationManager
+namespace GameKit.Services.LocalData.ApplicationManager
 {
     public class ApplicationStateChangeMessage
     {

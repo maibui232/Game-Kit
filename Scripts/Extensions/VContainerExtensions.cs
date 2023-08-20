@@ -1,5 +1,6 @@
 namespace GameKit.Extensions
 {
+    using System;
     using Cysharp.Threading.Tasks;
     using GameKit.Services.UI.Interface;
     using GameKit.Services.UI.Service;
@@ -7,6 +8,7 @@ namespace GameKit.Extensions
     using UnityEngine;
     using VContainer;
     using VContainer.Unity;
+    using Object = UnityEngine.Object;
 
     public static class VContainerExtensions
     {
@@ -58,6 +60,7 @@ namespace GameKit.Extensions
             await WaitToInitialize();
             var dummy = new DummyInject<T>();
             objectResolver.Inject(dummy);
+            dummy.Dispose();
         }
 
         public static async void InitUI<TPresenter>() where TPresenter : IUIPresenter
@@ -75,11 +78,11 @@ namespace GameKit.Extensions
         }
     }
 
-    public class DummyInject<T>
+    public class DummyInject<T> : IDisposable
     {
-        private T injected;
-
         [Inject]
-        private void Init(T injected) { this.injected = injected; }
+        private void Init(T injected) { }
+
+        public void Dispose() { }
     }
 }

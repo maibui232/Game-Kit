@@ -1,4 +1,4 @@
-namespace GameKit.Services.ApplicationManager
+namespace GameKit.Services.LocalData.ApplicationManager
 {
     using GameKit.Services.Message;
     using UnityEngine;
@@ -21,11 +21,7 @@ namespace GameKit.Services.ApplicationManager
             this.messageService.SendMessage(new ApplicationStateChangeMessage(ApplicationState.Pause));
         }
 
-        private void OnApplicationQuit()
-        {
-            this.messageService.SendMessage(new ApplicationStateChangeMessage(ApplicationState.Quit));
-            Debug.Log("QUIT");
-        }
+        private void OnApplicationQuit() { this.messageService.SendMessage(new ApplicationStateChangeMessage(ApplicationState.Quit)); }
 
         private void OnApplicationFocus(bool hasFocus)
         {

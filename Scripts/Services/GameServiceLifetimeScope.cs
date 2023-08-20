@@ -1,7 +1,8 @@
 namespace GameKit.Services
 {
     using Cysharp.Threading.Tasks;
-    using GameKit.Services.ApplicationManager;
+    using GameKit.Services.LocalData;
+    using GameKit.Services.LocalData.ApplicationManager;
     using GameKit.Services.Logger;
     using GameKit.Services.Message;
     using GameKit.Services.ObjectPool;
@@ -15,7 +16,7 @@ namespace GameKit.Services
         protected override void Configure(IContainerBuilder builder, IObjectResolver container, RootUI rootUI)
         {
             builder.Register<MessageService>(Lifetime.Singleton).AsImplementedInterfaces(); // Message
-            ApplicationManagerLifetimeScope.Config(builder, container);
+            LocalDataLifetimeScope.Config(builder, container);
 
             builder.Register<LoggerService>(Lifetime.Singleton).AsImplementedInterfaces(); // Logger
             builder.Register<SceneService>(Lifetime.Singleton).AsImplementedInterfaces(); // Scene Service
