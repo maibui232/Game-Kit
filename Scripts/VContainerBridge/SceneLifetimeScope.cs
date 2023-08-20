@@ -37,15 +37,11 @@ namespace GameKit.VContainerBridge
         }
 #endif
 
-        protected override async void Configure(IContainerBuilder builder)
+        protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
             this.parentReference.TypeName = nameof(VContainerSettings.Instance.RootLifetimeScope);
             this.parentReference.Object   = VContainerSettings.Instance.RootLifetimeScope;
-
-            await this.InitUI();
         }
-
-        protected virtual async UniTask InitUI() { await UniTask.WaitUntil(() => this.Container != null); }
     }
 }

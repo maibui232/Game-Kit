@@ -1,5 +1,6 @@
 namespace GameKit.Extensions
 {
+    using Cysharp.Threading.Tasks;
     using GameKit.Services.UI.Interface;
     using GameKit.Services.UI.Service;
     using MessagePipe;
@@ -7,11 +8,17 @@ namespace GameKit.Extensions
     using VContainer;
     using VContainer.Unity;
 
-    public static class Extensions
+    public static class VContainerExtensions
     {
         private static MessagePipeOptions options;
+        private static IObjectResolver    objectResolver;
+        private static GameObject         projectLifetime;
 
-        private static GameObject projectLifetime;
+        private static async UniTask WaitToInitialize()
+        {
+            await UniTask.WaitUntil(() => VContainerSettings.Instance.RootLifetimeScope.Container != null);
+            objectResolver = VContainerSettings.Instance.RootLifetimeScope.Container;
+        }
 
         public static ComponentRegistrationBuilder RegisterFromResource<T>(this IContainerBuilder builder, string resourcePath, Lifetime lifetime) where T : MonoBehaviour
         {
@@ -46,16 +53,33 @@ namespace GameKit.Extensions
             return builder.DontDestroyOnLoad().UnderTransform(projectLifetime.transform);
         }
 
-        public static void InitUI<TPresenter>(this IObjectResolver objectResolver) where TPresenter : IUIPresenter
+        public static async void NonLazy<T>(this RegistrationBuilder builder)
         {
+            await WaitToInitialize();
+            var dummy = new DummyInject<T>();
+            objectResolver.Inject(dummy);
+        }
+
+        public static async void InitUI<TPresenter>() where TPresenter : IUIPresenter
+        {
+            await WaitToInitialize();
             var uiServices = objectResolver.Resolve<IUIService>();
             uiServices.OpenView<TPresenter>();
         }
 
-        public static void InitUI<TPresenter, TModel>(this IObjectResolver objectResolver, TModel model) where TPresenter : IUIPresenter<TModel> where TModel : IModel
+        public static async void InitUI<TPresenter, TModel>(TModel model) where TPresenter : IUIPresenter<TModel> where TModel : IModel
         {
+            await WaitToInitialize();
             var uiServices = objectResolver.Resolve<IUIService>();
             uiServices.OpenView<TPresenter, TModel>(model);
         }
+    }
+
+    public class DummyInject<T>
+    {
+        private T injected;
+
+        [Inject]
+        private void Init(T injected) { this.injected = injected; }
     }
 }

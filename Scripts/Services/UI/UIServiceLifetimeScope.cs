@@ -5,7 +5,6 @@ namespace GameKit.Services.UI
     using GameKit.Services.UI.Interface;
     using GameKit.Services.UI.Service;
     using GameKit.VContainerBridge;
-    using UnityEngine.EventSystems;
     using VContainer;
     using VContainer.Unity;
 
@@ -17,7 +16,6 @@ namespace GameKit.Services.UI
             builder.RegisterComponentInNewPrefab(rootUI, Lifetime.Singleton).AsProject();
             builder.Register<UIService>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterAllDerivedTypeFrom<IUIPresenter>(Lifetime.Scoped);
-            builder.RegisterComponentOnNewGameObject<EventSystem>(Lifetime.Singleton, "Event System");
         }
     }
 }
