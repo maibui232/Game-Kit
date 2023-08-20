@@ -46,13 +46,13 @@ namespace GameKit.Extensions
             return builder.DontDestroyOnLoad().UnderTransform(projectLifetime.transform);
         }
 
-        public static void InitView<TPresenter>(this IObjectResolver objectResolver) where TPresenter : IUIPresenter
+        public static void InitUI<TPresenter>(this IObjectResolver objectResolver) where TPresenter : IUIPresenter
         {
             var uiServices = objectResolver.Resolve<IUIService>();
             uiServices.OpenView<TPresenter>();
         }
 
-        public static void InitView<TPresenter, TModel>(this IObjectResolver objectResolver, TModel model) where TPresenter : IUIPresenter<TModel> where TModel : IModel
+        public static void InitUI<TPresenter, TModel>(this IObjectResolver objectResolver, TModel model) where TPresenter : IUIPresenter<TModel> where TModel : IModel
         {
             var uiServices = objectResolver.Resolve<IUIService>();
             uiServices.OpenView<TPresenter, TModel>(model);
