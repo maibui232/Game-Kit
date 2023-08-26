@@ -10,12 +10,11 @@ namespace GameKit.Services.LocalData
     {
         protected override void Configure(IContainerBuilder builder, IObjectResolver container)
         {
-            builder.RegisterAllDerivedTypeFrom<ILocalData>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<LocalDataHandler>().As<ILocalDataHandler>();
 
             builder.RegisterMessage<ApplicationStateChangeMessage>();
             builder.RegisterMessage<LoadLocalDataCompletedMessage>();
 
-            builder.RegisterEntryPoint<LocalDataHandler>().As<ILocalDataHandler>();
             builder.RegisterComponentOnNewGameObject<ApplicationManger>(Lifetime.Singleton, nameof(ApplicationManger)).AsProject().NonLazy<ApplicationManger>();
         }
     }

@@ -6,7 +6,7 @@ namespace GameKit.Services.LocalData
 
     public interface ILocalDataHandler : IStartable, IDisposable
     {
-        UniTask SaveAllLocalData();
-        UniTask LoadAllLocalData();
+        UniTask    SaveAllLocalData();
+        T Load<T>() where T : ILocalData, new();
     }
 }

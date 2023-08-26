@@ -2,14 +2,13 @@ namespace GameKit.Services.LocalData
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Cysharp.Threading.Tasks;
-    using GameKit.Extensions;
     using GameKit.Services.LocalData.ApplicationManager;
     using GameKit.Services.Logger;
     using GameKit.Services.Message;
     using Newtonsoft.Json;
     using UnityEngine;
+    using VContainer;
 
     public class LocalDataHandler : ILocalDataHandler
     {
@@ -17,24 +16,20 @@ namespace GameKit.Services.LocalData
 
         private readonly IMessageService              messageService;
         private readonly ILoggerService               loggerService;
-        private readonly Dictionary<Type, ILocalData> typeToLocalData;
+        private readonly IObjectResolver              objectResolver;
+        private readonly Dictionary<Type, ILocalData> typeToLocalData = new();
 
         #endregion
 
         private const string LocalDataPrefixKey = "LD_";
 
-        public LocalDataHandler(IEnumerable<ILocalData> listLocalData, IMessageService messageService, ILoggerService loggerService)
+        public LocalDataHandler(IMessageService messageService, ILoggerService loggerService)
         {
-            this.messageService  = messageService;
-            this.loggerService   = loggerService;
-            this.typeToLocalData = listLocalData.ToDictionary(x => x.GetType(), x => x);
+            this.messageService = messageService;
+            this.loggerService  = loggerService;
         }
 
-        public async void Start()
-        {
-            this.messageService.Subscribe<ApplicationStateChangeMessage>(this.OnApplicationStateChange);
-            await this.LoadAllLocalData();
-        }
+        public void Start() { this.messageService.Subscribe<ApplicationStateChangeMessage>(this.OnApplicationStateChange); }
 
         public void Dispose() { this.messageService.UnSubscribe<ApplicationStateChangeMessage>(this.OnApplicationStateChange); }
 
@@ -56,25 +51,19 @@ namespace GameKit.Services.LocalData
             return UniTask.CompletedTask;
         }
 
-        private UniTask Load(Type type)
+        public T Load<T>() where T : ILocalData, new()
         {
-            if (!PlayerPrefs.HasKey(this.Key(type)))
+            if (!PlayerPrefs.HasKey(this.Key(typeof(T))))
             {
-                var data = Activator.CreateInstance(type);
-                LoadData(data);
-                return UniTask.CompletedTask;
+                var data = new T();
+                this.typeToLocalData.Add(typeof(T), data);
+                return data;
             }
 
-            var jsonData    = PlayerPrefs.GetString(this.Key(type));
-            var convertData = JsonConvert.DeserializeObject(jsonData, type);
-            LoadData(convertData);
-            return UniTask.CompletedTask;
-
-            void LoadData(object data)
-            {
-                this.typeToLocalData[data.GetType()] = data as ILocalData;
-                this.loggerService.Log(Color.cyan, $"Load: {this.Key(type)}");
-            }
+            var jsonData  = PlayerPrefs.GetString(this.Key(typeof(T)));
+            var localData = JsonConvert.DeserializeObject<T>(jsonData);
+            this.typeToLocalData.Add(typeof(T), localData);
+            return localData;
         }
 
         public UniTask SaveAllLocalData()
@@ -87,13 +76,6 @@ namespace GameKit.Services.LocalData
             }
 
             return UniTask.WhenAll(listTask);
-        }
-
-        public async UniTask LoadAllLocalData()
-        {
-            var listTask = Enumerable.Select(ReflectionExtension.GetAllNonAbstractDerivedTypeFrom<ILocalData>(), this.Load).ToList();
-            await UniTask.WhenAll(listTask);
-            this.messageService.SendMessage<LoadLocalDataCompletedMessage>();
         }
     }
 }

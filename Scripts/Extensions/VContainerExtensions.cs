@@ -2,6 +2,7 @@ namespace GameKit.Extensions
 {
     using System;
     using Cysharp.Threading.Tasks;
+    using GameKit.Services.LocalData;
     using GameKit.Services.UI.Interface;
     using GameKit.Services.UI.Service;
     using MessagePipe;
@@ -53,6 +54,15 @@ namespace GameKit.Extensions
             projectLifetime ??= new GameObject("ProjectLifetime");
             if (projectLifetime != null) Object.DontDestroyOnLoad(projectLifetime);
             return builder.DontDestroyOnLoad().UnderTransform(projectLifetime.transform);
+        }
+
+        public static RegistrationBuilder RegisterLocalData<T>(this IContainerBuilder builder) where T : class, ILocalData, new()
+        {
+            return builder.Register(container =>
+            {
+                var data = container.Resolve<ILocalDataHandler>().Load<T>();
+                return data;
+            }, Lifetime.Singleton);
         }
 
         public static async void NonLazy<T>(this RegistrationBuilder builder)
