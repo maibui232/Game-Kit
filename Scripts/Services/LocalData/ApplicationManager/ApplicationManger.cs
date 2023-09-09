@@ -18,15 +18,15 @@ namespace GameKit.Services.LocalData.ApplicationManager
         private void OnApplicationPause(bool pauseStatus)
         {
             if (!pauseStatus) return;
-            this.messageService.SendMessage(new ApplicationStateChangeMessage(ApplicationState.Pause));
+            this.messageService.Send(new ApplicationStateChangeMessage(ApplicationState.Pause));
         }
 
-        private void OnApplicationQuit() { this.messageService.SendMessage(new ApplicationStateChangeMessage(ApplicationState.Quit)); }
+        private void OnApplicationQuit() { this.messageService.Send(new ApplicationStateChangeMessage(ApplicationState.Quit)); }
 
         private void OnApplicationFocus(bool hasFocus)
         {
             if (!hasFocus) return;
-            this.messageService.SendMessage(new ApplicationStateChangeMessage(ApplicationState.Run));
+            this.messageService.Send(new ApplicationStateChangeMessage(ApplicationState.Run));
         }
     }
 }

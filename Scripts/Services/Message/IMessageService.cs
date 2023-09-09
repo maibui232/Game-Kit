@@ -9,14 +9,14 @@ namespace GameKit.Services.Message
 
     public interface IMessageService
     {
-        void SendMessage<TMessage>() where TMessage : new();
-        void SendMessage<TMessage>(TMessage message);
+        void Send<TMessage>() where TMessage : new();
+        void Send<TMessage>(TMessage message);
         void Subscribe<TMessage>(Action<TMessage> callback);
         void Subscribe<TMessage>(Action callback);
         void UnSubscribe<TMessage>(Action<TMessage> callback);
         void UnSubscribe<TMessage>(Action callback);
-        void SendMessageWithKey<TKey, TMessage>(TKey key) where TMessage : new();
-        void SendMessageWithKey<TKey, TMessage>(TKey key, TMessage message);
+        void SendWithKey<TKey, TMessage>(TKey key) where TMessage : new();
+        void SendWithKey<TKey, TMessage>(TKey key, TMessage message);
         void SubscribeWithKey<TKey, TMessage>(TKey key, Action<TMessage> callback);
         void SubscribeWithKey<TKey, TMessage>(TKey key, Action callback);
         void UnSubscribeWithKey<TKey, TMessage>(TKey key, Action<TMessage> callback);
@@ -40,13 +40,13 @@ namespace GameKit.Services.Message
             GlobalMessagePipe.SetProvider(resolver.AsServiceProvider());
         }
 
-        public void SendMessage<T>() where T : new()
+        public void Send<T>() where T : new()
         {
             var publisher = this.resolver.Resolve<IPublisher<T>>();
             publisher.Publish(new T());
         }
 
-        public void SendMessage<T>(T message)
+        public void Send<T>(T message)
         {
             var publisher = this.resolver.Resolve<IPublisher<T>>();
             publisher.Publish(message);
@@ -106,13 +106,13 @@ namespace GameKit.Services.Message
             this.messageToDisposable.Remove(methodInfo);
         }
 
-        public void SendMessageWithKey<TKey, TMessage>(TKey key) where TMessage : new()
+        public void SendWithKey<TKey, TMessage>(TKey key) where TMessage : new()
         {
             var publisher = this.resolver.Resolve<IPublisher<TKey, TMessage>>();
             publisher.Publish(key, new TMessage());
         }
 
-        public void SendMessageWithKey<TKey, TMessage>(TKey key, TMessage message)
+        public void SendWithKey<TKey, TMessage>(TKey key, TMessage message)
         {
             var publisher = this.resolver.Resolve<IPublisher<TKey, TMessage>>();
             publisher.Publish(key, message);
