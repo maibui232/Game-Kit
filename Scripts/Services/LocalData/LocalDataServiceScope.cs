@@ -6,7 +6,7 @@ namespace GameKit.Services.LocalData
     using VContainer;
     using VContainer.Unity;
 
-    public class LocalDataLifetimeScope : SubLifetimeScope<LocalDataLifetimeScope>
+    public class LocalDataServiceScope : SubScope<LocalDataServiceScope>
     {
         protected override void Configure(IContainerBuilder builder, IObjectResolver container)
         {

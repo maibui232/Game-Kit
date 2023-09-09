@@ -8,7 +8,7 @@ namespace GameKit.Services.UI
     using VContainer;
     using VContainer.Unity;
 
-    public class UIServiceLifetimeScope : SubLifetimeScope<UIServiceLifetimeScope, RootUI>
+    public class UIServiceScope : SubScope<UIServiceScope, RootUI>
     {
         protected override void Configure(IContainerBuilder builder, IObjectResolver container, RootUI rootUI)
         {

@@ -3,7 +3,7 @@ namespace GameKit.VContainerBridge
     using VContainer;
     using VContainer.Unity;
 
-    public abstract class ProjectLifeTimeScope : LifetimeScope
+    public abstract class ProjectScope : LifetimeScope
     {
         protected override void Configure(IContainerBuilder builder)
         {

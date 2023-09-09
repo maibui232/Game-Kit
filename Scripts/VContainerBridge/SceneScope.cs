@@ -3,13 +3,12 @@ namespace GameKit.VContainerBridge
     using System;
     using System.Linq;
     using System.Reflection;
-    using Cysharp.Threading.Tasks;
     using Sirenix.OdinInspector;
     using UnityEngine;
     using VContainer;
     using VContainer.Unity;
 
-    public class SceneLifetimeScope : LifetimeScope
+    public class SceneScope : LifetimeScope
     {
 #if UNITY_EDITOR
         [Button]

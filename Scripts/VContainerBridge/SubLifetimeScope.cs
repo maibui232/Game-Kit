@@ -2,7 +2,7 @@ namespace GameKit.VContainerBridge
 {
     using VContainer;
 
-    public abstract class SubLifetimeScope<TDerived> where TDerived : SubLifetimeScope<TDerived>, new()
+    public abstract class SubScope<TDerived> where TDerived : SubScope<TDerived>, new()
     {
         public static void Config(IContainerBuilder builder, IObjectResolver container)
         {
@@ -13,7 +13,7 @@ namespace GameKit.VContainerBridge
         protected abstract void Configure(IContainerBuilder builder, IObjectResolver container);
     }
 
-    public abstract class SubLifetimeScope<TDerived, T1> where TDerived : SubLifetimeScope<TDerived, T1>, new()
+    public abstract class SubScope<TDerived, T1> where TDerived : SubScope<TDerived, T1>, new()
     {
         public static void Config(IContainerBuilder builder, IObjectResolver container, T1 param1)
         {
@@ -24,7 +24,7 @@ namespace GameKit.VContainerBridge
         protected abstract void Configure(IContainerBuilder builder, IObjectResolver container, T1 param1);
     }
 
-    public abstract class SubLifetimeScope<TDerived, T1, T2> where TDerived : SubLifetimeScope<TDerived, T1, T2>, new()
+    public abstract class SubScope<TDerived, T1, T2> where TDerived : SubScope<TDerived, T1, T2>, new()
     {
         public static void Config(IContainerBuilder builder, IObjectResolver container, T1 param1, T2 param2)
         {
@@ -35,7 +35,7 @@ namespace GameKit.VContainerBridge
         protected abstract void Configure(IContainerBuilder builder, IObjectResolver container, T1 param1, T2 param2);
     }
 
-    public abstract class SubLifetimeScope<TDerived, T1, T2, T3> where TDerived : SubLifetimeScope<TDerived, T1, T2, T3>, new()
+    public abstract class SubScope<TDerived, T1, T2, T3> where TDerived : SubScope<TDerived, T1, T2, T3>, new()
     {
         public static void Config(IContainerBuilder builder, IObjectResolver container, T1 param1, T2 param2, T3 param3)
         {
@@ -46,7 +46,7 @@ namespace GameKit.VContainerBridge
         protected abstract void Configure(IContainerBuilder builder, IObjectResolver container, T1 param1, T2 param2, T3 param3);
     }
 
-    public abstract class SubLifetimeScope<TDerived, T1, T2, T3, T4> where TDerived : SubLifetimeScope<TDerived, T1, T2, T3, T4>, new()
+    public abstract class SubScope<TDerived, T1, T2, T3, T4> where TDerived : SubScope<TDerived, T1, T2, T3, T4>, new()
     {
         public static void Config(IContainerBuilder builder, IObjectResolver container, T1 param1, T2 param2, T3 param3, T4 param4)
         {
@@ -57,7 +57,7 @@ namespace GameKit.VContainerBridge
         protected abstract void Configure(IContainerBuilder builder, IObjectResolver container, T1 param1, T2 param2, T3 param3, T4 param4);
     }
 
-    public abstract class SubLifetimeScope<TDerived, T1, T2, T3, T4, T5> where TDerived : SubLifetimeScope<TDerived, T1, T2, T3, T4, T5>, new()
+    public abstract class SubScope<TDerived, T1, T2, T3, T4, T5> where TDerived : SubScope<TDerived, T1, T2, T3, T4, T5>, new()
     {
         public static void Config(IContainerBuilder builder, IObjectResolver container, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5)
         {
