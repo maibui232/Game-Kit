@@ -1,8 +1,11 @@
 namespace GameKit.Optionals.Command
 {
-    public interface ICommand
+    using System;
+    using Cysharp.Threading.Tasks;
+
+    public interface ICommand : IDisposable
     {
-        void Execute();
-        void UnDo();
+        void    Execute();
+        UniTask UnDo();
     }
 }

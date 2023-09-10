@@ -34,13 +34,14 @@ namespace GameKit.Optionals.Command
         {
             command.Execute();
             this.commandList.Add(command);
-            if (this.commandList.Count > this.maxStack)
-            {
-                this.commandList.RemoveAt(0);
-            }
+            if (this.commandList.Count <= this.maxStack) return;
+
+            var firstCommand = this.commandList[0];
+            this.commandList.Remove(firstCommand);
+            firstCommand.Dispose();
         }
 
-        public void InvokeUndo()
+        public async void InvokeUndo()
         {
             if (this.commandList.Count == 0)
             {
@@ -48,9 +49,10 @@ namespace GameKit.Optionals.Command
                 return;
             }
 
-            var command = this.commandList.Last();
-            this.commandList.Remove(command);
-            command.UnDo();
+            var lastCommand = this.commandList.Last();
+            this.commandList.Remove(lastCommand);
+            await lastCommand.UnDo();
+            lastCommand.Dispose();
         }
     }
 }
