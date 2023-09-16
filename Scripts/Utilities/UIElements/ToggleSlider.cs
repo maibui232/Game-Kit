@@ -32,7 +32,17 @@ namespace GameKit.Utilities.UIElements
             else this.MoveToOff(true);
         }
 
-        private void Awake() { this.slider.targetGraphic.raycastTarget = false; }
+        private void Awake()
+        {
+            this.slider.interactable = false;
+            this.handleBtn.onClick.AddListener(this.OnClick);
+        }
+
+        private void OnClick()
+        {
+            this.IsOn = !this.IsOn;
+            this.OnStartChangeToggle();
+        }
 
         protected virtual void OnChangeValue(bool obj) { this.ChangeValue?.Invoke(obj); }
 
@@ -48,9 +58,15 @@ namespace GameKit.Utilities.UIElements
 
         private void MoveToOn(bool immediate = false)
         {
-            var d            = immediate ? 0 : this.duration;
+            if (immediate)
+            {
+                this.slider.value = 1f;
+                this.OnCompleteChangeToggle();
+                return;
+            }
+
             var currentValue = 0f;
-            DOTween.To(() => currentValue, x => currentValue = x, 1f, d)
+            DOTween.To(() => currentValue, x => currentValue = x, 1f, this.duration)
                 .OnStart(this.OnStartChangeToggle)
                 .OnUpdate(() => this.slider.value = currentValue)
                 .OnComplete(this.OnCompleteChangeToggle);
@@ -58,9 +74,15 @@ namespace GameKit.Utilities.UIElements
 
         private void MoveToOff(bool immediate = false)
         {
-            var d            = immediate ? 0 : this.duration;
+            if (immediate)
+            {
+                this.slider.value = 0f;
+                this.OnCompleteChangeToggle();
+                return;
+            }
+
             var currentValue = 1f;
-            DOTween.To(() => currentValue, x => currentValue = x, 0f, d)
+            DOTween.To(() => currentValue, x => currentValue = x, 0f, this.duration)
                 .OnStart(this.OnStartChangeToggle)
                 .OnUpdate(() => this.slider.value = currentValue)
                 .OnComplete(this.OnCompleteChangeToggle);
