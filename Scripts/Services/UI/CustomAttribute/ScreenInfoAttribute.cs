@@ -17,7 +17,7 @@ namespace GameKit.Services.UI.CustomAttribute
         public bool CloseWhenClickOutSize;
         public bool Overlay;
 
-        public PopupInfoAttribute(string addressableId, bool blur = false, bool closeWhenClickOutSize = false, bool overlay = false) : base(addressableId)
+        public PopupInfoAttribute(string addressableId, bool blur = true, bool closeWhenClickOutSize = false, bool overlay = true) : base(addressableId)
         {
             this.Blur                  = blur;
             this.CloseWhenClickOutSize = closeWhenClickOutSize;

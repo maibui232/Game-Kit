@@ -81,9 +81,12 @@ namespace GameKit.Services.UI.Service
             this.uiPresenterStack.Add(presenter);
         }
 
-        private bool IsPopup<TPresenter>() { return typeof(BasePopupPresenter<>).IsSubclassOfRawGeneric(typeof(TPresenter)); }
-
-        private bool IsOverlay<TPresenter>(TPresenter presenter) { return this.IsPopup<TPresenter>() && this.GetUIInfo<PopupInfoAttribute>(presenter).Overlay; }
+        private bool IsOverlay<TPresenter>(TPresenter presenter)
+        {
+            var uiInfo    = this.GetUIInfo<PopupInfoAttribute>(presenter);
+            var isOverlay = uiInfo?.Overlay ?? false;
+            return isOverlay;
+        }
 
         private async UniTask<TPresenter> InitPresenter<TPresenter>() where TPresenter : IUIPresenter
         {
