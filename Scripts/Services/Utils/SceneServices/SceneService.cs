@@ -2,7 +2,7 @@ namespace GameKit.Services.Utils.SceneServices
 {
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
-    using GameKit.Services.Addressable;
+    using GameKit.Services.GameAsset;
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
 
@@ -11,20 +11,20 @@ namespace GameKit.Services.Utils.SceneServices
         Dictionary<string, SceneInstance> NameToScene { get; }
         UniTask<SceneInstance>            LoadSingleScene(string sceneName, bool activeOnLoad = true);
         UniTask<SceneInstance>            LoadAdditiveScene(string sceneName, bool activeOnLoad = true);
-        UniTask                           UnloadScene(string sceneName, UnloadSceneOptions unloadSceneOptions = UnloadSceneOptions.None, bool autoReleaseHandler = true);
+        UniTask                           UnloadScene(string sceneName);
     }
 
     public class SceneService : ISceneService
     {
         #region Inject
 
-        private readonly IAssetServices assetServices;
+        private readonly IGameAssets assetServices;
 
         #endregion
 
         public static SceneService Instance;
 
-        public SceneService(IAssetServices assetServices) { this.assetServices = assetServices; }
+        public SceneService(IGameAssets assetServices) { this.assetServices = assetServices; }
 
 
         public Dictionary<string, SceneInstance> NameToScene { get; set; } = new();
@@ -44,15 +44,15 @@ namespace GameKit.Services.Utils.SceneServices
             return scene;
         }
 
-        public async UniTask UnloadScene(string sceneName, UnloadSceneOptions unloadSceneOptions = UnloadSceneOptions.None, bool autoReleaseHandler = true)
+        public async UniTask UnloadScene(string sceneName)
         {
             if (!this.NameToScene.TryGetValue(sceneName, out var scene))
             {
-                await SceneManager.UnloadSceneAsync(sceneName, unloadSceneOptions);
+                await SceneManager.UnloadSceneAsync(sceneName);
                 return;
             }
 
-            await this.assetServices.UnloadSceneAsync(scene, unloadSceneOptions, autoReleaseHandler);
+            await this.assetServices.UnloadSceneAsync(scene);
             this.NameToScene.Remove(sceneName);
         }
     }

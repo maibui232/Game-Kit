@@ -4,10 +4,8 @@ namespace GameKit.Services.UI.Service
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using GameKit.Exception;
-    using GameKit.Extensions;
-    using GameKit.Services.Addressable;
+    using GameKit.Services.GameAsset;
     using GameKit.Services.Logger;
-    using GameKit.Services.UI.Base;
     using GameKit.Services.UI.CustomAttribute;
     using GameKit.Services.UI.Interface;
     using UnityEngine;
@@ -31,7 +29,7 @@ namespace GameKit.Services.UI.Service
     {
         #region Inject
 
-        private readonly IAssetServices  assetServices;
+        private readonly IGameAssets     assetServices;
         private readonly IObjectResolver objectResolver;
         private readonly RootUI          rootUI;
         private readonly ILoggerService  logger;
@@ -41,7 +39,7 @@ namespace GameKit.Services.UI.Service
         private readonly List<IUIPresenter>      uiPresenterStack    = new();
         private readonly Dictionary<Type, IView> presenterTypeToView = new();
 
-        protected UIService(IAssetServices assetServices, IObjectResolver objectResolver, RootUI rootUI, ILoggerService logger)
+        protected UIService(IGameAssets assetServices, IObjectResolver objectResolver, RootUI rootUI, ILoggerService logger)
         {
             this.assetServices  = assetServices;
             this.objectResolver = objectResolver;

@@ -4,7 +4,7 @@ namespace GameKit.Services.ObjectPool
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameKit.Exception;
-    using GameKit.Services.Addressable;
+    using GameKit.Services.GameAsset;
     using UnityEngine;
 
     public interface IObjectPoolService
@@ -31,7 +31,7 @@ namespace GameKit.Services.ObjectPool
     {
         #region Inject
 
-        private readonly IAssetServices assetServices;
+        private readonly IGameAssets assetServices;
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace GameKit.Services.ObjectPool
 
         public static ObjectPoolService Instance;
 
-        public ObjectPoolService(IAssetServices assetServices)
+        public ObjectPoolService(IGameAssets assetServices)
         {
             this.assetServices = assetServices;
             Instance           = this;
