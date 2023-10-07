@@ -1,4 +1,4 @@
-namespace GameKit.Editor.Editor.Utils
+namespace GameKit.Editor.Utils
 {
     using System;
     using System.Collections.Generic;
